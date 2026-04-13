@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="green_primary">#1A6B3C</color>
+    <color name="green_light">#28A05A</color>
+    <color name="green_pale">#E8F5EE</color>
+    <color name="green_fill">#C8E6D0</color>
+    <color name="amber_primary">#E8A020</color>
+    <color name="amber_light">#FEF3D8</color>
+    <color name="red_price">#C0392B</color>
+    <color name="red_fill">#FADBD8</color>
+    <color name="background">#F4F7F4</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="text_primary">#1A2E1A</color>
+    <color name="text_secondary">#5A7060</color>
+    <color name="divider">#DDE8DD</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="chip_selected">#1A6B3C</color>
+    <color name="chip_unselected">#E8F5EE</color>
+    <color name="green_dark">#0D4A2A</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="amber_dark">#C07010</color>
+    <color name="colorOnSecondary">#000000</color>
+    <color name="bg_primary">#F4F7F4</color>
+    <color name="bg_card">#FFFFFF</color>
+    <color name="border_color">#DDE8DD</color>
+</resources>

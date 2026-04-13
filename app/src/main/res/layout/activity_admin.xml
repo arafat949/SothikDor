@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_primary">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/amber_primary"
+        app:navigationIconTint="@android:color/white"
+        app:titleTextColor="@android:color/white" />
+
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Admin Info -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/amber_light"
+                android:layout_marginBottom="20dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="⚡ এই প্যানেল থেকে দাম আপডেট করলে সব ইউজার সাথে সাথে দেখতে পাবেন (Firebase Real-time)!"
+                    android:textSize="13sp"
+                    android:textColor="@color/amber_dark" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- পণ্য সিলেক্ট -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="পণ্য বেছে নিন:" android:textStyle="bold"
+                android:textColor="@color/text_primary" android:textSize="14sp" android:layout_marginBottom="8dp" />
+
+            <Spinner android:id="@+id/spinnerProduct"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:background="@drawable/bg_spinner" android:padding="12dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- বাজার সিলেক্ট -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="বাজার বেছে নিন:" android:textStyle="bold"
+                android:textColor="@color/text_primary" android:textSize="14sp" android:layout_marginBottom="8dp" />
+
+            <Spinner android:id="@+id/spinnerMarket"
+                android:layout_width="match_parent" android:layout_height="48dp"
+                android:background="@drawable/bg_spinner" android:padding="12dp"
+                android:layout_marginBottom="20dp" />
+
+            <!-- দামের ইনপুট -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginBottom="16dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp" android:layout_weight="1"
+                    android:layout_height="wrap_content" android:hint="সর্বনিম্ন দাম (৳)"
+                    app:boxStrokeColor="@color/green_primary" android:layout_marginEnd="8dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMinPrice"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp" android:layout_weight="1"
+                    android:layout_height="wrap_content" android:hint="সর্বোচ্চ দাম (৳)"
+                    app:boxStrokeColor="@color/green_primary">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMaxPrice"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <!-- সেভ বাটন -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent" android:layout_height="52dp"
+                android:text="✅ দাম সেভ করুন"
+                android:textSize="16sp" android:textStyle="bold"
+                app:backgroundTint="@color/green_primary"
+                android:layout_marginBottom="16dp" />
+
+            <ProgressBar android:id="@+id/progressBar"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_gravity="center" android:visibility="gone"
+                android:indeterminateTint="@color/green_primary" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,12 @@
+{
+  "products": {
+    "p001": {"name": "আলু (দেশি)", "category": "সবজি", "unit": "কেজি", "emoji": "🥔", "is_active": true},
+    "p002": {"name": "পেঁয়াজ (দেশি)", "category": "সবজি", "unit": "কেজি", "emoji": "🧅", "is_active": true},
+    "p006": {"name": "মিনিকেট চাল", "category": "চাল-ডাল", "unit": "কেজি", "emoji": "🌾", "is_active": true},
+    "p009": {"name": "সয়াবিন তেল", "category": "তেল-মশলা", "unit": "লিটার", "emoji": "🛢️", "is_active": true}
+  },
+  "markets": {
+    "m001": {"name": "কারওয়ান বাজার", "area": "তেজগাঁও", "city": "ঢাকা", "latitude": 23.7537, "longitude": 90.3923},
+    "m002": {"name": "শান্তিনগর বাজার", "area": "শান্তিনগর", "city": "ঢাকা", "latitude": 23.7354, "longitude": 90.4090}
+  }
+}

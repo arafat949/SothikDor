@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="horizontal" android:gravity="center_vertical"
+    android:paddingStart="16dp" android:paddingEnd="16dp"
+    android:paddingTop="14dp" android:paddingBottom="14dp"
+    android:background="@color/card_background">
+    <!-- Rank -->
+    <TextView android:id="@+id/tvRank" android:layout_width="32dp" android:layout_height="32dp"
+        android:background="@drawable/bg_rank_circle" android:gravity="center"
+        android:textSize="14sp" android:textStyle="bold" android:textColor="@color/white" />
+    <!-- Market Info -->
+    <LinearLayout android:layout_width="0dp" android:layout_weight="1"
+        android:layout_height="wrap_content" android:orientation="vertical"
+        android:layout_marginStart="12dp">
+        <TextView android:id="@+id/tvMarketName" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textSize="15sp"
+            android:textStyle="bold" android:textColor="@color/text_primary" />
+        <TextView android:id="@+id/tvArea" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textSize="12sp"
+            android:textColor="@color/text_secondary" />
+        <TextView android:id="@+id/tvBadge" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textSize="11sp"
+            android:textColor="@color/green_primary" android:textStyle="bold"
+            android:visibility="gone" android:layout_marginTop="2dp" />
+    </LinearLayout>
+    <!-- Prices -->
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:orientation="vertical" android:gravity="end">
+        <TextView android:id="@+id/tvMinPrice" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textSize="18sp" android:textStyle="bold"
+            android:textColor="@color/text_primary" />
+        <TextView android:id="@+id/tvMaxPrice" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textSize="11sp"
+            android:textColor="@color/text_secondary" android:layout_marginTop="2dp" />
+    </LinearLayout>
+</LinearLayout>

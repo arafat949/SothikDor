@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "874388274512",
+    "project_id": "sothik-dor",
+    "storage_bucket": "sothik-dor.firebasestorage.app",
+    "firebase_url": "https://sothik-dor-default-rtdb.asia-southeast1.firebasedatabase.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874388274512:android:ac22dcb8d2896622270055",
+        "android_client_info": {
+          "package_name": "com.sothikdor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSqho9GYw2qiWWFBi0D2BtYMGFsaFZR6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

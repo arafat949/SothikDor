@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">সঠিক দর</string>
+    <string name="nav_home">হোম</string>
+    <string name="nav_compare">তুলনা</string>
+    <string name="nav_budget">বাজেট</string>
+    <string name="nav_map">মানচিত্র</string>
+    <string name="search_hint">পণ্য খুঁজুন...</string>
+    <string name="today_market">আজকের বাজার দর</string>
+    <string name="price_chart">দামের ইতিহাস</string>
+
+    <string-array name="complaint_types">
+        <item>অতিরিক্ত মূল্য নেওয়া</item>
+        <item>ভেজাল পণ্য বিক্রি</item>
+        <item>ওজনে কম দেওয়া</item>
+        <item>অসৌজন্যমূলক আচরণ</item>
+        <item>মেয়াদোত্তীর্ণ পণ্য বিক্রি</item>
+        <item>অন্যান্য</item>
+    </string-array>
+</resources>

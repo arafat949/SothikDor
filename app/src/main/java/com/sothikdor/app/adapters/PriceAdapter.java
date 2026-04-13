@@ -1,0 +1,103 @@
+package com.sothikdor.app.adapters;
+
+import com.sothikdor.R;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.sothikdor.app.models.Price;
+
+import java.util.List;
+
+public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolder> {
+
+    private final Context context;
+    private final List<Price> priceList;
+    private final OnPriceClickListener listener;
+    private int lastAnimatedPosition = -1;
+
+    public interface OnPriceClickListener {
+        void onPriceClick(Price price);
+    }
+
+    public PriceAdapter(Context context, List<Price> priceList, OnPriceClickListener listener) {
+        this.context = context;
+        this.priceList = priceList;
+        this.listener = listener;
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.item_price_card, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Price price = priceList.get(position);
+
+        holder.tvEmoji.setText(price.getProductEmoji() != null ? price.getProductEmoji() : "🛒");
+        holder.tvProductName.setText(price.getProductName());
+        holder.tvCategory.setText(price.getCategory() + " • প্রতি " + price.getUnit());
+        holder.tvMinPrice.setText("৳" + (int) price.getMinPrice());
+        holder.tvPriceRange.setText("৳" + (int) price.getMinPrice() + " - ৳" + (int) price.getMaxPrice());
+
+        // দামের পরিবর্তন দেখানো
+        double trend = price.getPriceTrend();
+        if (trend > 0) {
+            holder.tvTrend.setText("▲ ৳" + (int) trend + " বেড়েছে");
+            holder.tvTrend.setTextColor(ContextCompat.getColor(context, R.color.red_price));
+        } else if (trend < 0) {
+            holder.tvTrend.setText("▼ ৳" + (int) Math.abs(trend) + " কমেছে");
+            holder.tvTrend.setTextColor(ContextCompat.getColor(context, R.color.green_primary));
+        } else {
+            holder.tvTrend.setText("→ স্থিতিশীল");
+            holder.tvTrend.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
+        }
+
+        // Chart দেখার hint
+        holder.tvChartHint.setText("📊 গ্রাফ দেখুন");
+
+        // Card click → Chart Activity
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onPriceClick(price);
+        });
+
+        // Scroll Animation - নিচ থেকে উপরে আসবে
+        if (position > lastAnimatedPosition) {
+            holder.itemView.startAnimation(
+                    AnimationUtils.loadAnimation(context, R.anim.item_slide_up));
+            lastAnimatedPosition = position;
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return priceList.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvEmoji, tvProductName, tvCategory, tvMinPrice, tvPriceRange, tvTrend, tvChartHint;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvEmoji = itemView.findViewById(R.id.tvEmoji);
+            tvProductName = itemView.findViewById(R.id.tvProductName);
+            tvCategory = itemView.findViewById(R.id.tvCategory);
+            tvMinPrice = itemView.findViewById(R.id.tvMinPrice);
+            tvPriceRange = itemView.findViewById(R.id.tvPriceRange);
+            tvTrend = itemView.findViewById(R.id.tvTrend);
+            tvChartHint = itemView.findViewById(R.id.tvChartHint);
+        }
+    }
+}

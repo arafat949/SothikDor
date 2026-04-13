@@ -1,0 +1,62 @@
+[
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/item_price_card.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/item_price_card.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/activity_profile.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/activity_profile.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/activity_budget.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/activity_budget.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/activity_complaint.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/activity_complaint.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/activity_main.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.sothikdor.app-mergeDebugResources-39:/layout/activity_login.xml",
+        "source": "com.sothikdor.app-main-42:/layout/activity_login.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/activity_splash.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/activity_product_detail.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/activity_product_detail.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/activity_compare.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/activity_compare.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/activity_map.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/activity_map.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/item_budget_row.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/item_budget_row.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/activity_admin.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/activity_admin.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/item_compare_row.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/item_compare_row.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/activity_login.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/activity_login.xml"
+    },
+    {
+        "merged": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-mergeDebugResources-39:/layout/activity_chart.xml",
+        "source": "/home/arafat/.gradle/daemon/9.0-milestone-1/com.sothikdor.app-main-42:/layout/activity_chart.xml"
+    }
+]
