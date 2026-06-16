@@ -2,7 +2,7 @@ name: Daily Price Update
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # প্রতিদিন রাত ৮টা BST (UTC+6 = UTC 2am)
+    - cron: '0 0 * * *'  # প্রতিদিন সকাল ৬টা BST (UTC+6 = UTC 12am)
   workflow_dispatch:       # manual trigger
 
 jobs:
