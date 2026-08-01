@@ -29,6 +29,9 @@ public final class ItemPriceCardBinding implements ViewBinding {
   public final TextView tvEmoji;
 
   @NonNull
+  public final TextView tvMarketName;
+
+  @NonNull
   public final TextView tvMinPrice;
 
   @NonNull
@@ -41,12 +44,14 @@ public final class ItemPriceCardBinding implements ViewBinding {
   public final TextView tvTrend;
 
   private ItemPriceCardBinding(@NonNull CardView rootView, @NonNull TextView tvCategory,
-      @NonNull TextView tvChartHint, @NonNull TextView tvEmoji, @NonNull TextView tvMinPrice,
-      @NonNull TextView tvPriceRange, @NonNull TextView tvProductName, @NonNull TextView tvTrend) {
+      @NonNull TextView tvChartHint, @NonNull TextView tvEmoji, @NonNull TextView tvMarketName,
+      @NonNull TextView tvMinPrice, @NonNull TextView tvPriceRange, @NonNull TextView tvProductName,
+      @NonNull TextView tvTrend) {
     this.rootView = rootView;
     this.tvCategory = tvCategory;
     this.tvChartHint = tvChartHint;
     this.tvEmoji = tvEmoji;
+    this.tvMarketName = tvMarketName;
     this.tvMinPrice = tvMinPrice;
     this.tvPriceRange = tvPriceRange;
     this.tvProductName = tvProductName;
@@ -98,6 +103,12 @@ public final class ItemPriceCardBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tvMarketName;
+      TextView tvMarketName = ViewBindings.findChildViewById(rootView, id);
+      if (tvMarketName == null) {
+        break missingId;
+      }
+
       id = R.id.tvMinPrice;
       TextView tvMinPrice = ViewBindings.findChildViewById(rootView, id);
       if (tvMinPrice == null) {
@@ -123,7 +134,7 @@ public final class ItemPriceCardBinding implements ViewBinding {
       }
 
       return new ItemPriceCardBinding((CardView) rootView, tvCategory, tvChartHint, tvEmoji,
-          tvMinPrice, tvPriceRange, tvProductName, tvTrend);
+          tvMarketName, tvMinPrice, tvPriceRange, tvProductName, tvTrend);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -228,13 +228,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void filterPrices(String query, String category) {
         filteredPrices.clear();
+        // প্রতিটি পণ্যের সবচেয়ে কম দামের বাজার রাখি
+        java.util.Map<String, Price> bestPriceMap = new java.util.LinkedHashMap<>();
         for (Price price : allPrices) {
             boolean matchesQuery = query.isEmpty() || price.getProductName().contains(query);
             boolean matchesCategory = category.equals("সব") || category.equals(price.getCategory());
             if (matchesQuery && matchesCategory) {
-                filteredPrices.add(price);
+                String pid = price.getProductId();
+                if (!bestPriceMap.containsKey(pid)) {
+                    bestPriceMap.put(pid, price);
+                } else {
+                    // সবচেয়ে কম avgPrice রাখি
+                    if (price.getAvgPrice() < bestPriceMap.get(pid).getAvgPrice()) {
+                        bestPriceMap.put(pid, price);
+                    }
+                }
             }
         }
+        filteredPrices.addAll(bestPriceMap.values());
         priceAdapter.notifyDataSetChanged();
         if (filteredPrices.isEmpty() && !allPrices.isEmpty()) {
             layoutEmpty.setVisibility(View.VISIBLE);

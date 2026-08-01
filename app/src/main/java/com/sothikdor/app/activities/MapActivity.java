@@ -1,168 +1,145 @@
 package com.sothikdor.app.activities;
 
 import com.sothikdor.R;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import com.sothikdor.app.models.Market;
 import com.sothikdor.app.utils.FirebaseHelper;
-
 import java.util.List;
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity {
 
+    private MapView mapView;
     private static final int LOCATION_PERMISSION_REQUEST = 1001;
-    private GoogleMap mMap;
-    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // OSMDroid config
+        Configuration.getInstance().setUserAgentValue(getPackageName());
+
         setContentView(R.layout.activity_map);
 
         if (getSupportActionBar() != null) {
-            if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            if (getSupportActionBar() != null) getSupportActionBar().setTitle("নিকটস্থ বাজার");
+            getSupportActionBar().setTitle("বাজারের মানচিত্র");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mapView = findViewById(R.id.map);
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
+        mapView.setMultiTouchControls(true);
 
-        SupportMapFragment mapFragment = (SupportMapFragment)
-                getSupportFragmentManager().findFragmentById(R.id.mapFragment);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
-    }
+        // Default zoom to Dhaka
+        mapView.getController().setZoom(12.0);
+        mapView.getController().setCenter(new GeoPoint(23.8103, 90.4125));
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setCompassEnabled(true);
-
-        // Location permission চাওয়া
+        // Request location permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            enableMyLocation();
+            addMyLocation();
         } else {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST);
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                LOCATION_PERMISSION_REQUEST);
         }
 
-        // Firebase থেকে বাজারের তালিকা লোড করে Map-এ দেখানো
-        loadMarketsOnMap();
+        loadMarkets();
     }
 
-    private void enableMyLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-            fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, location -> {
-                        if (location != null) {
-                            LatLng myPos = new LatLng(location.getLatitude(), location.getLongitude());
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPos, 13f));
-                        }
-                    });
-        }
+    private void addMyLocation() {
+        MyLocationNewOverlay locationOverlay = new MyLocationNewOverlay(
+            new GpsMyLocationProvider(this), mapView);
+        locationOverlay.enableMyLocation();
+        mapView.getOverlays().add(locationOverlay);
     }
 
-    private void loadMarketsOnMap() {
+    private void loadMarkets() {
         FirebaseHelper.getInstance().getAllMarkets(new FirebaseHelper.MarketCallback() {
             @Override
             public void onSuccess(List<Market> markets) {
                 for (Market market : markets) {
-                    LatLng position = new LatLng(market.getLatitude(), market.getLongitude());
-                    MarkerOptions markerOptions = new MarkerOptions()
-                            .position(position)
-                            .title(market.getName())
-                            .snippet(market.getArea())
-                            .icon(BitmapDescriptorFactory.defaultMarker(
-                                    BitmapDescriptorFactory.HUE_GREEN));
-                    mMap.addMarker(markerOptions);
-                }
-
-                // ঢাকার কেন্দ্রে জুম করা (যদি location না পাওয়া যায়)
-                if (!markets.isEmpty()) {
-                    LatLng dhaka = new LatLng(23.7637, 90.3900);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(dhaka, 12f));
+                    addMarker(market);
                 }
             }
-
             @Override
             public void onError(String error) {
-                // Demo markers যোগ করা
-                addDemoMarkers();
+                // fallback: add default Dhaka markets
+                addDefaultMarkets();
             }
-        });
-
-        // Map মার্কার ক্লিক করলে দূরত্ব দেখানো
-        mMap.setOnMarkerClickListener(marker -> {
-            Toast.makeText(MapActivity.this,
-                    marker.getTitle() + "\n" + marker.getSnippet(),
-                    Toast.LENGTH_SHORT).show();
-            return false;
         });
     }
 
-    private void addDemoMarkers() {
+    private void addMarker(Market market) {
+        Marker marker = new Marker(mapView);
+        marker.setPosition(new GeoPoint(market.getLatitude(), market.getLongitude()));
+        marker.setTitle(market.getName());
+        marker.setSnippet(market.getArea());
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        mapView.getOverlays().add(marker);
+        mapView.invalidate();
+    }
+
+    private void addDefaultMarkets() {
         double[][] markets = {
-            {23.7537, 90.3923, 0}, // কারওয়ান বাজার
-            {23.7397, 90.4200, 0}, // শান্তিনগর
-            {23.7627, 90.3572, 0}, // মোহাম্মদপুর
-            {23.8103, 90.3661, 0}, // মিরপুর
-            {23.7558, 90.4338, 0}  // রামপুরা
+            {23.7515, 90.3930, 0}, // কারওয়ান বাজার
+            {23.7334, 90.4190, 1}, // শান্তিনগর
+            {23.7647, 90.3572, 2}, // মোহাম্মদপুর
+            {23.8223, 90.3654, 3}, // মিরপুর ১০
+            {23.7549, 90.4299, 4}, // রামপুরা
+            {23.7098, 90.4320, 5}, // যাত্রাবাড়ী
         };
-        String[] names = {"কারওয়ান বাজার", "শান্তিনগর বাজার", "মোহাম্মদপুর কৃষি মার্কেট", "মিরপুর ১০ বাজার", "রামপুরা বাজার"};
-        String[] areas = {"তেজগাঁও, ঢাকা", "শান্তিনগর, ঢাকা", "মোহাম্মদপুর, ঢাকা", "মিরপুর, ঢাকা", "রামপুরা, ঢাকা"};
-
-        for (int i = 0; i < names.length; i++) {
-            LatLng pos = new LatLng(markets[i][0], markets[i][1]);
-            mMap.addMarker(new MarkerOptions().position(pos).title(names[i]).snippet(areas[i])
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+        String[] names = {
+            "কারওয়ান বাজার","শান্তিনগর বাজার",
+            "মোহাম্মদপুর বাজার","মিরপুর ১০ বাজার",
+            "রামপুরা বাজার","যাত্রাবাড়ী বাজার"
+        };
+        for (int i = 0; i < markets.length; i++) {
+            Marker marker = new Marker(mapView);
+            marker.setPosition(new GeoPoint(markets[i][0], markets[i][1]));
+            marker.setTitle(names[i]);
+            marker.setSnippet("ঢাকা");
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            mapView.getOverlays().add(marker);
         }
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(23.7637, 90.3900), 12f));
+        mapView.invalidate();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                enableMyLocation();
-            } else {
-                Toast.makeText(this, "লোকেশন পারমিশন দিলে কাছের বাজার দেখা যাবে", Toast.LENGTH_SHORT).show();
-            }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] results) {
+        super.onRequestPermissionsResult(requestCode, permissions, results);
+        if (requestCode == LOCATION_PERMISSION_REQUEST &&
+            results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) {
+            addMyLocation();
         }
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) { onBackPressed(); return true; }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onResume() { super.onResume(); mapView.onResume(); }
+
+    @Override
+    protected void onPause() { super.onPause(); mapView.onPause(); }
+
+    @Override
+    public boolean onSupportNavigateUp() { onBackPressed(); return true; }
 }

@@ -36,5 +36,6 @@
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE" />
         <activity android:name="com.sothikdor.app.activities.ComplaintActivity" android:exported="false"/>
+        <activity android:name="com.sothikdor.app.activities.AdminActivity" android:exported="false"/>
     </application>
 </manifest>

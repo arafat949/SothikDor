@@ -14,7 +14,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // সবসময় sign out করো — login screen দেখাও
+        //alltime sign out and show login screen
         FirebaseAuth.getInstance().signOut();
 
         new Handler().postDelayed(() -> {

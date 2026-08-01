@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         tvToggleMode = findViewById(R.id.tvToggleMode);
         progressBar = findViewById(R.id.progressBar);
 
-        // Guest mode - Demo তে ব্যবহারের জন্য
+        // Guest mode - Demo
         Button btnGuest = findViewById(R.id.btnGuest);
         btnGuest.setOnClickListener(v -> signInAnonymously());
 

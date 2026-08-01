@@ -29,6 +29,10 @@
             <TextView android:id="@+id/tvCategory" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="12sp"
                 android:textColor="@color/text_secondary" android:layout_marginTop="2dp" />
+            <TextView android:id="@+id/tvMarketName" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:textSize="11sp"
+                android:textColor="@color/green_primary" android:layout_marginTop="2dp"
+                android:drawablePadding="3dp"/>
             <TextView android:id="@+id/tvTrend" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="12sp"
                 android:layout_marginTop="4dp" />

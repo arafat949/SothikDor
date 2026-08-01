@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:2:1-40:12
-INJECTED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:2:1-40:12
-INJECTED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:2:1-40:12
-INJECTED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:2:1-40:12
+ADDED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:2:1-41:12
+INJECTED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:2:1-41:12
+INJECTED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:2:1-41:12
+INJECTED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:2:1-41:12
 MERGED from [androidx.databinding:viewbinding:8.2.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/d0b1a575706ca3b597d3eace0de573c2/transformed/jetified-viewbinding-8.2.2/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.11.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/99fda1f1914a3ce8fcea4aa5dbd23ab8/transformed/material-1.11.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/bf0aaaf86ec4dddeb3bad997e2d1dfd7/transformed/constraintlayout-2.1.4/AndroidManifest.xml:2:1-11:12
@@ -16,7 +16,7 @@ MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.1.0] /home/arafat/
 MERGED from [com.google.firebase:firebase-database:20.3.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/ccbebd1e97de4afb6d6c1398469b0119/transformed/jetified-firebase-database-20.3.0/AndroidManifest.xml:15:1-38:12
 MERGED from [com.google.firebase:firebase-auth:22.3.1] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/77966666348ba42fdcf3df051d4a9d4c/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:17:1-75:12
 MERGED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/a03ea73b5fc7c7ba6448b9c0b9f2129c/transformed/jetified-firebase-firestore-24.10.2/AndroidManifest.xml:2:1-26:12
-MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:17:1-44:12
+MERGED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:2:1-27:12
 MERGED from [com.google.android.gms:play-services-location:21.1.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/bdbccbccc2417b3f6eda20f1bb40aa8c/transformed/jetified-play-services-location-21.1.0/AndroidManifest.xml:2:1-9:12
 MERGED from [com.github.PhilJay:MPAndroidChart:v3.1.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/b1902e1fef5e477bc86a48bf4ad97919/transformed/jetified-MPAndroidChart-v3.1.0/AndroidManifest.xml:2:1-20:12
 MERGED from [com.facebook.shimmer:shimmer:0.5.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/ee2429cc73602773d4d32ae9d15cbb14/transformed/jetified-shimmer-0.5.0/AndroidManifest.xml:2:1-7:12
@@ -86,8 +86,6 @@ MERGED from [com.google.firebase:firebase-auth:22.3.1] /home/arafat/.gradle/cach
 MERGED from [com.google.firebase:firebase-auth:22.3.1] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/77966666348ba42fdcf3df051d4a9d4c/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:25:5-67
 MERGED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/a03ea73b5fc7c7ba6448b9c0b9f2129c/transformed/jetified-firebase-firestore-24.10.2/AndroidManifest.xml:11:5-67
 MERGED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/a03ea73b5fc7c7ba6448b9c0b9f2129c/transformed/jetified-firebase-firestore-24.10.2/AndroidManifest.xml:11:5-67
-MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:24:5-67
-MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:24:5-67
 MERGED from [com.google.android.recaptcha:recaptcha:18.4.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/46272947549dc1fcc6f5a043270c7856/transformed/jetified-recaptcha-18.4.0/AndroidManifest.xml:7:5-67
 MERGED from [com.google.android.recaptcha:recaptcha:18.4.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/46272947549dc1fcc6f5a043270c7856/transformed/jetified-recaptcha-18.4.0/AndroidManifest.xml:7:5-67
 	android:name
@@ -108,8 +106,6 @@ MERGED from [com.google.firebase:firebase-auth:22.3.1] /home/arafat/.gradle/cach
 MERGED from [com.google.firebase:firebase-auth:22.3.1] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/77966666348ba42fdcf3df051d4a9d4c/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:26:5-79
 MERGED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/a03ea73b5fc7c7ba6448b9c0b9f2129c/transformed/jetified-firebase-firestore-24.10.2/AndroidManifest.xml:10:5-79
 MERGED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/a03ea73b5fc7c7ba6448b9c0b9f2129c/transformed/jetified-firebase-firestore-24.10.2/AndroidManifest.xml:10:5-79
-MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:23:5-79
-MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:23:5-79
 MERGED from [com.google.android.recaptcha:recaptcha:18.4.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/46272947549dc1fcc6f5a043270c7856/transformed/jetified-recaptcha-18.4.0/AndroidManifest.xml:8:5-79
 MERGED from [com.google.android.recaptcha:recaptcha:18.4.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/46272947549dc1fcc6f5a043270c7856/transformed/jetified-recaptcha-18.4.0/AndroidManifest.xml:8:5-79
 MERGED from [io.grpc:grpc-android:1.57.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/42b4c38f26a34c5cbc5ec0e0ef4c2bb0/transformed/jetified-grpc-android-1.57.2/AndroidManifest.xml:7:5-79
@@ -117,8 +113,8 @@ MERGED from [io.grpc:grpc-android:1.57.2] /home/arafat/.gradle/caches/9.0-milest
 	android:name
 		ADDED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:6:22-76
 application
-ADDED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:7:5-39:19
-INJECTED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:7:5-39:19
+ADDED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:7:5-40:19
+INJECTED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:7:5-40:19
 MERGED from [com.google.android.material:material:1.11.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/99fda1f1914a3ce8fcea4aa5dbd23ab8/transformed/material-1.11.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/99fda1f1914a3ce8fcea4aa5dbd23ab8/transformed/material-1.11.0/AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/bf0aaaf86ec4dddeb3bad997e2d1dfd7/transformed/constraintlayout-2.1.4/AndroidManifest.xml:9:5-20
@@ -129,8 +125,6 @@ MERGED from [com.google.firebase:firebase-auth:22.3.1] /home/arafat/.gradle/cach
 MERGED from [com.google.firebase:firebase-auth:22.3.1] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/77966666348ba42fdcf3df051d4a9d4c/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:28:5-73:19
 MERGED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/a03ea73b5fc7c7ba6448b9c0b9f2129c/transformed/jetified-firebase-firestore-24.10.2/AndroidManifest.xml:13:5-24:19
 MERGED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/a03ea73b5fc7c7ba6448b9c0b9f2129c/transformed/jetified-firebase-firestore-24.10.2/AndroidManifest.xml:13:5-24:19
-MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:36:5-42:19
-MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:36:5-42:19
 MERGED from [com.google.android.gms:play-services-location:21.1.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/bdbccbccc2417b3f6eda20f1bb40aa8c/transformed/jetified-play-services-location-21.1.0/AndroidManifest.xml:7:5-20
 MERGED from [com.google.android.gms:play-services-location:21.1.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/bdbccbccc2417b3f6eda20f1bb40aa8c/transformed/jetified-play-services-location-21.1.0/AndroidManifest.xml:7:5-20
 MERGED from [com.google.firebase:firebase-common-ktx:20.4.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/4d6796dcdbbd7d5127044598ce4dad3c/transformed/jetified-firebase-common-ktx-20.4.2/AndroidManifest.xml:8:5-16:19
@@ -265,6 +259,12 @@ ADDED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:38:9-107
 		ADDED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:38:81-105
 	android:name
 		ADDED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:38:19-80
+activity#com.sothikdor.app.activities.AdminActivity
+ADDED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:39:9-103
+	android:exported
+		ADDED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:39:77-101
+	android:name
+		ADDED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml:39:19-76
 uses-sdk
 INJECTED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /home/arafat/SothikDor/app/src/main/AndroidManifest.xml
@@ -293,8 +293,8 @@ MERGED from [com.google.firebase:firebase-auth:22.3.1] /home/arafat/.gradle/cach
 MERGED from [com.google.firebase:firebase-auth:22.3.1] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/77966666348ba42fdcf3df051d4a9d4c/transformed/jetified-firebase-auth-22.3.1/AndroidManifest.xml:21:5-23:64
 MERGED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/a03ea73b5fc7c7ba6448b9c0b9f2129c/transformed/jetified-firebase-firestore-24.10.2/AndroidManifest.xml:6:5-44
 MERGED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/a03ea73b5fc7c7ba6448b9c0b9f2129c/transformed/jetified-firebase-firestore-24.10.2/AndroidManifest.xml:6:5-44
-MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:20:5-44
+MERGED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:5:5-7:41
+MERGED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:5:5-7:41
 MERGED from [com.google.android.gms:play-services-location:21.1.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/bdbccbccc2417b3f6eda20f1bb40aa8c/transformed/jetified-play-services-location-21.1.0/AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-location:21.1.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/bdbccbccc2417b3f6eda20f1bb40aa8c/transformed/jetified-play-services-location-21.1.0/AndroidManifest.xml:5:5-44
 MERGED from [com.github.PhilJay:MPAndroidChart:v3.1.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/b1902e1fef5e477bc86a48bf4ad97919/transformed/jetified-MPAndroidChart-v3.1.0/AndroidManifest.xml:16:5-18:41
@@ -503,24 +503,38 @@ ADDED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle
 		ADDED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/a03ea73b5fc7c7ba6448b9c0b9f2129c/transformed/jetified-firebase-firestore-24.10.2/AndroidManifest.xml:22:17-82
 	android:name
 		ADDED from [com.google.firebase:firebase-firestore:24.10.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/a03ea73b5fc7c7ba6448b9c0b9f2129c/transformed/jetified-firebase-firestore-24.10.2/AndroidManifest.xml:21:17-111
-uses-feature#0x00020000
-ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:26:5-28:35
-	android:glEsVersion
-		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:27:9-41
+supports-screens
+ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:9:5-12:40
+	android:largeScreens
+		ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:11:9-36
+	android:normalScreens
+		ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:12:9-37
+	android:anyDensity
+		ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:10:9-34
+uses-feature#android.hardware.location.network
+ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:14:5-16:36
 	android:required
-		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:28:9-32
-queries
-ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:30:5-34:15
-package#com.google.android.apps.maps
-ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:33:9-64
+		ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:16:9-33
 	android:name
-		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:33:18-61
-uses-library#org.apache.http.legacy
-ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:39:9-41:40
+		ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:15:9-57
+uses-feature#android.hardware.location.gps
+ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:17:5-19:36
 	android:required
-		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:41:13-37
+		ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:19:9-33
 	android:name
-		ADDED from [com.google.android.gms:play-services-maps:18.2.0] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/17027a17891045272e57b3a9a27dca5c/transformed/jetified-play-services-maps-18.2.0/AndroidManifest.xml:40:13-50
+		ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:18:9-53
+uses-feature#android.hardware.telephony
+ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:20:5-22:36
+	android:required
+		ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:22:9-33
+	android:name
+		ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:21:9-50
+uses-feature#android.hardware.wifi
+ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:23:5-25:36
+	android:required
+		ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:25:9-33
+	android:name
+		ADDED from [org.osmdroid:osmdroid-android:6.1.17] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/3b1757fe9e45397b7a6845fb8e63073e/transformed/jetified-osmdroid-android-6.1.17/AndroidManifest.xml:24:9-45
 meta-data#com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar
 ADDED from [com.google.firebase:firebase-common-ktx:20.4.2] /home/arafat/.gradle/caches/9.0-milestone-1/transforms/4d6796dcdbbd7d5127044598ce4dad3c/transformed/jetified-firebase-common-ktx-20.4.2/AndroidManifest.xml:12:13-14:85
 	android:value

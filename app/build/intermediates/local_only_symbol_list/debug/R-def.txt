@@ -36,7 +36,11 @@ color red_price
 color text_primary
 color text_secondary
 color white
+drawable bg_avatar_circle
 drawable bg_emoji_circle
+drawable bg_icon_blue
+drawable bg_icon_orange
+drawable bg_icon_red
 drawable bg_input_field
 drawable bg_login_header
 drawable bg_qty_btn
@@ -101,7 +105,7 @@ id etSearch
 id ivSplashLogo
 id layoutEmpty
 id lineChart
-id mapFragment
+id map
 id nav_budget
 id nav_compare
 id nav_home
@@ -148,6 +152,7 @@ id tvTotalCost
 id tvTrend
 id tvUnit
 id tvUnitPrice
+id tv_avatar
 id tv_profile_email
 id tv_profile_name
 layout activity_admin

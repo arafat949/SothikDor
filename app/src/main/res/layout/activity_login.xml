@@ -2,42 +2,39 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F1F8E9">
-
+    android:background="@color/background">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="32dp"
         android:gravity="center">
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_cart"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🛒"
+            android:textSize="72sp"
             android:layout_marginTop="48dp"
-            android:layout_marginBottom="8dp"/>
-
+            android:layout_marginBottom="4dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="সঠিক দর"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="#1B5E20"/>
-
+            android:textColor="@color/green_primary"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="আপনার বাজারের সঠিক দাম জানুন"
             android:textSize="14sp"
-            android:textColor="#558B2F"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="40dp"/>
-
         <LinearLayout
             android:id="@+id/tilName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:visibility="gone">
             <EditText
                 android:id="@+id/etName"
@@ -46,13 +43,12 @@
                 android:hint="নাম"
                 android:inputType="textPersonName"
                 android:background="@drawable/bg_input_field"
-                android:textColor="#1B5E20"
-                android:textColorHint="#A5D6A7"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:layout_marginBottom="12dp"/>
         </LinearLayout>
-
         <EditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
@@ -60,12 +56,11 @@
             android:hint="ইমেইল"
             android:inputType="textEmailAddress"
             android:background="@drawable/bg_input_field"
-            android:textColor="#1B5E20"
-            android:textColorHint="#A5D6A7"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:layout_marginBottom="12dp"/>
-
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
@@ -73,57 +68,51 @@
             android:hint="পাসওয়ার্ড"
             android:inputType="textPassword"
             android:background="@drawable/bg_input_field"
-            android:textColor="#1B5E20"
-            android:textColorHint="#A5D6A7"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:layout_marginBottom="20dp"/>
-
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_marginBottom="8dp"/>
-
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:text="লগইন করুন"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:backgroundTint="#2E7D32"
+            android:backgroundTint="@color/green_primary"
             android:layout_marginBottom="12dp"/>
-
         <Button
             android:id="@+id/btnGuest"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:text="গেস্ট হিসেবে প্রবেশ করুন"
-            android:textColor="#2E7D32"
+            android:textColor="@color/green_primary"
             android:textSize="14sp"
-            android:backgroundTint="#C8E6C9"
+            android:backgroundTint="@color/green_pale"
             android:layout_marginBottom="12dp"/>
-
         <Button
             android:id="@+id/btnRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:text="রেজিস্ট্রেশন"
-            android:backgroundTint="#C8E6C9"
-            android:textColor="#2E7D32"/>
-
+            android:backgroundTint="@color/green_pale"
+            android:textColor="@color/green_primary"/>
         <TextView
             android:id="@+id/tvToggleMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="নতুন অ্যাকাউন্ট তৈরি করুন"
-            android:textColor="#2E7D32"
+            android:textColor="@color/green_primary"
             android:textSize="14sp"
             android:padding="8dp"/>
-
     </LinearLayout>
 </ScrollView>

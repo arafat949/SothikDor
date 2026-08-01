@@ -2,7 +2,8 @@ package com.sothikdor.app.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -10,6 +11,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private static final String ADMIN_EMAIL = "mdarafatmiah949@gmail.com";
     private FirebaseAuth mAuth;
 
     @Override
@@ -25,14 +27,36 @@ public class ProfileActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        TextView tvName = findViewById(com.sothikdor.R.id.tv_profile_name);
+        TextView tvName  = findViewById(com.sothikdor.R.id.tv_profile_name);
         TextView tvEmail = findViewById(com.sothikdor.R.id.tv_profile_email);
-        Button btnLogout = findViewById(com.sothikdor.R.id.btn_logout);
+        LinearLayout btnAdmin     = findViewById(com.sothikdor.R.id.btn_admin);
+        LinearLayout btnComplaint = findViewById(com.sothikdor.R.id.btn_complaint);
+        LinearLayout btnLogout    = findViewById(com.sothikdor.R.id.btn_logout);
 
         if (user != null) {
-            tvName.setText(user.getDisplayName() != null ? user.getDisplayName() : "ব্যবহারকারী");
-            tvEmail.setText(user.isAnonymous() ? "গেস্ট মোড" : user.getEmail());
+            String name = user.getDisplayName();
+            String email = user.getEmail();
+
+            tvName.setText(name != null && !name.isEmpty() ? name : "ব্যবহারকারী");
+            tvEmail.setText(user.isAnonymous() ? "গেস্ট মোড" : email);
+
+            // শুধু Admin email হলে Admin Panel দেখাবে
+            boolean isAdmin = !user.isAnonymous()
+                    && email != null
+                    && email.equalsIgnoreCase(ADMIN_EMAIL);
+
+            btnAdmin.setVisibility(isAdmin ? View.VISIBLE : View.GONE);
+        } else {
+            tvName.setText("ব্যবহারকারী");
+            tvEmail.setText("গেস্ট মোড");
+            btnAdmin.setVisibility(View.GONE);
         }
+
+        btnAdmin.setOnClickListener(v ->
+            startActivity(new Intent(this, AdminActivity.class)));
+
+        btnComplaint.setOnClickListener(v ->
+            startActivity(new Intent(this, ComplaintActivity.class)));
 
         btnLogout.setOnClickListener(v -> {
             mAuth.signOut();

@@ -49,6 +49,9 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolder> 
         holder.tvEmoji.setText(price.getProductEmoji() != null ? price.getProductEmoji() : "🛒");
         holder.tvProductName.setText(price.getProductName());
         holder.tvCategory.setText(price.getCategory() + " • প্রতি " + price.getUnit());
+        if (holder.tvMarketName != null && price.getMarketName() != null) {
+            holder.tvMarketName.setText("📍 " + price.getMarketName());
+        }
         holder.tvMinPrice.setText("৳" + (int) price.getMinPrice());
         holder.tvPriceRange.setText("৳" + (int) price.getMinPrice() + " - ৳" + (int) price.getMaxPrice());
 
@@ -87,13 +90,14 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvEmoji, tvProductName, tvCategory, tvMinPrice, tvPriceRange, tvTrend, tvChartHint;
+        TextView tvEmoji, tvProductName, tvCategory, tvMarketName, tvMinPrice, tvPriceRange, tvTrend, tvChartHint;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvEmoji = itemView.findViewById(R.id.tvEmoji);
             tvProductName = itemView.findViewById(R.id.tvProductName);
             tvCategory = itemView.findViewById(R.id.tvCategory);
+            tvMarketName = itemView.findViewById(R.id.tvMarketName);
             tvMinPrice = itemView.findViewById(R.id.tvMinPrice);
             tvPriceRange = itemView.findViewById(R.id.tvPriceRange);
             tvTrend = itemView.findViewById(R.id.tvTrend);

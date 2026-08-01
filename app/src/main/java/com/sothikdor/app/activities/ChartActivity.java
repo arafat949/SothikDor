@@ -64,13 +64,13 @@ public class ChartActivity extends AppCompatActivity {
     }
 
     private void setupChart() {
-        // Chart চেহারা কনফিগার করা
+        // Chart
         lineChart.setBackgroundColor(ContextCompat.getColor(this, R.color.card_background));
         lineChart.setGridBackgroundColor(Color.TRANSPARENT);
         lineChart.setDrawGridBackground(false);
         lineChart.setDrawBorders(false);
 
-        // Description সরানো
+        // Description
         Description desc = new Description();
         desc.setText("");
         lineChart.setDescription(desc);
@@ -99,10 +99,10 @@ public class ChartActivity extends AppCompatActivity {
         leftAxis.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
         leftAxis.setTextSize(10f);
 
-        // Right Y Axis সরানো
+        // Right Y Axis
         lineChart.getAxisRight().setEnabled(false);
 
-        // দামের মান ক্লিক করলে দেখানো
+        // clik for price
         lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -113,9 +113,7 @@ public class ChartActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Firebase থেকে শেষ ৭ দিনের দামের ডেটা লোড করা এবং Chart-এ অ্যানিমেশন সহ দেখানো
-     */
+    // animation for 7 days
     private void loadChartData() {
         FirebaseHelper.getInstance().getLast7DaysPrices(productId, marketId,
                 new FirebaseHelper.PriceHistoryCallback() {
@@ -152,13 +150,13 @@ public class ChartActivity extends AppCompatActivity {
             if (p.getMinPrice() < minVal) minVal = p.getMinPrice();
         }
 
-        // Min Price Line (সবুজ)
+        // Min Price Line (green)
         LineDataSet minSet = new LineDataSet(minEntries, "সর্বনিম্ন দাম");
         styleDataSet(minSet,
                 ContextCompat.getColor(this, R.color.green_primary),
                 ContextCompat.getColor(this, R.color.green_fill));
 
-        // Max Price Line (লাল)
+        // Max Price Line (red)
         LineDataSet maxSet = new LineDataSet(maxEntries, "সর্বোচ্চ দাম");
         styleDataSet(maxSet,
                 ContextCompat.getColor(this, R.color.red_price),
@@ -170,7 +168,7 @@ public class ChartActivity extends AppCompatActivity {
         LineData lineData = new LineData(minSet, maxSet);
         lineChart.setData(lineData);
 
-        // অ্যানিমেশন - Chart বাম থেকে ডানে এঁকে যাবে
+        //animation left to right
         lineChart.animateX(1500, Easing.EaseInOutCubic);
         lineChart.invalidate();
 
