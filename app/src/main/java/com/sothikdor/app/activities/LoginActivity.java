@@ -5,6 +5,7 @@ import com.sothikdor.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,8 @@ import com.sothikdor.app.models.User;
 import com.sothikdor.app.utils.FirebaseHelper;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String TAG = "LoginActivity";
 
     private EditText etEmail, etPassword, etName;
     private Button btnLogin, btnRegister;
@@ -98,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         goToMainActivity();
                     } else {
+                        Log.w(TAG, "Email login failed", task.getException());
                         Toast.makeText(this, "লগইন ব্যর্থ হয়েছে। ইমেইল বা পাসওয়ার্ড ভুল।",
                                 Toast.LENGTH_LONG).show();
                     }
@@ -125,27 +129,36 @@ public class LoginActivity extends AppCompatActivity {
                     btnLogin.setEnabled(true);
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        if (firebaseUser != null) {
-                            User user = new User(firebaseUser.getUid(), name, "");
-                            FirebaseHelper.getInstance().saveUser(user, new FirebaseHelper.SimpleCallback() {
-                                @Override
-                                public void onSuccess() {
-                                    Toast.makeText(LoginActivity.this,
-                                        "✅ Account Create Success! স্বাগতম " + name,
-                                        Toast.LENGTH_LONG).show();
-                                    new android.os.Handler().postDelayed(() -> goToMainActivity(), 1500);
-                                }
-                                @Override
-                                public void onError(String error) {
-                                    Toast.makeText(LoginActivity.this,
-                                        "✅ Account Create Success! স্বাগতম " + name,
-                                        Toast.LENGTH_LONG).show();
-                                    new android.os.Handler().postDelayed(() -> goToMainActivity(), 1500);
-                                }
-                            });
+                        if (firebaseUser == null) {
+                            Log.e(TAG, "Registration reported success but current user is null");
+                            Toast.makeText(this, "❌ রেজিস্ট্রেশন ব্যর্থ: আবার চেষ্টা করুন",
+                                    Toast.LENGTH_LONG).show();
+                            return;
                         }
+                        User user = new User(firebaseUser.getUid(), name, "");
+                        FirebaseHelper.getInstance().saveUser(user, new FirebaseHelper.SimpleCallback() {
+                            @Override
+                            public void onSuccess() {
+                                Toast.makeText(LoginActivity.this,
+                                    "✅ Account Create Success! স্বাগতম " + name,
+                                    Toast.LENGTH_LONG).show();
+                                new android.os.Handler().postDelayed(() -> goToMainActivity(), 1500);
+                            }
+                            @Override
+                            public void onError(String error) {
+                                // অ্যাকাউন্ট তৈরি হয়েছে, কিন্তু প্রোফাইল সেভ হয়নি
+                                Log.e(TAG, "Account created but profile save failed: " + error);
+                                Toast.makeText(LoginActivity.this,
+                                    "অ্যাকাউন্ট তৈরি হয়েছে, তবে প্রোফাইল সেভ হয়নি: " + error,
+                                    Toast.LENGTH_LONG).show();
+                                new android.os.Handler().postDelayed(() -> goToMainActivity(), 1500);
+                            }
+                        });
                     } else {
-                        String errorMsg = task.getException() != null ? task.getException().getMessage() : "অজানা সমস্যা";
+                        Log.w(TAG, "Registration failed", task.getException());
+                        String errorMsg = task.getException() != null && task.getException().getMessage() != null
+                                ? task.getException().getMessage()
+                                : "অজানা সমস্যা";
                         if (errorMsg.contains("email address is already in use")) {
                             etEmail.setError("এই ইমেইল দিয়ে আগেই একাউন্ট আছে");
                             Toast.makeText(this, "❌ এই ইমেইল আগেই ব্যবহার হয়েছে", Toast.LENGTH_LONG).show();
@@ -168,6 +181,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         goToMainActivity();
                     } else {
+                        Log.w(TAG, "Anonymous sign-in failed", task.getException());
                         Toast.makeText(this, "গেস্ট লগইন ব্যর্থ হয়েছে", Toast.LENGTH_SHORT).show();
                     }
                 });

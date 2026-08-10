@@ -4,8 +4,10 @@ import com.sothikdor.R;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -29,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChartActivity extends AppCompatActivity {
+
+    private static final String TAG = "ChartActivity";
 
     private LineChart lineChart;
     private TextView tvProductName, tvCurrentPrice, tvPriceChange, tvHighPrice, tvLowPrice;
@@ -129,6 +133,9 @@ public class ChartActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String error) {
+                        Log.e(TAG, "Price history load failed for product " + productId + ": " + error);
+                        Toast.makeText(ChartActivity.this,
+                                "দামের ইতিহাস লোড হয়নি, ডেমো ডেটা দেখানো হচ্ছে", Toast.LENGTH_SHORT).show();
                         showDemoChart();
                     }
                 });

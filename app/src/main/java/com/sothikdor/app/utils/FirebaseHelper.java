@@ -1,5 +1,7 @@
 package com.sothikdor.app.utils;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FirebaseHelper {
+
+    private static final String TAG = "FirebaseHelper";
 
     private static FirebaseHelper instance;
     private final DatabaseReference mDatabase;
@@ -83,7 +87,7 @@ public class FirebaseHelper {
 
                     @Override
                     public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
+                        callback.onError(logAndDescribe("getAllProducts", error));
                     }
                 });
     }
@@ -116,7 +120,7 @@ public class FirebaseHelper {
 
                     @Override
                     public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
+                        callback.onError(logAndDescribe("getPricesByDate(" + date + ")", error));
                     }
                 });
     }
@@ -145,7 +149,7 @@ public class FirebaseHelper {
 
                     @Override
                     public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
+                        callback.onError(logAndDescribe("getPricesByProduct(" + productId + ")", error));
                     }
                 });
     }
@@ -176,7 +180,7 @@ public class FirebaseHelper {
 
                     @Override
                     public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
+                        callback.onError(logAndDescribe("getLast7DaysPrices(" + productId + ")", error));
                     }
                 });
     }
@@ -191,7 +195,10 @@ public class FirebaseHelper {
                 .child(key)
                 .setValue(price)
                 .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "addPrice failed for " + key + " on " + date, e);
+                    callback.onError(describe(e));
+                });
     }
 
     // ==================== MARKETS ====================
@@ -217,7 +224,7 @@ public class FirebaseHelper {
 
                     @Override
                     public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
+                        callback.onError(logAndDescribe("getAllMarkets", error));
                     }
                 });
     }
@@ -229,7 +236,10 @@ public class FirebaseHelper {
                 .child(user.getUserId())
                 .setValue(user)
                 .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "saveUser failed for " + user.getUserId(), e);
+                    callback.onError(describe(e));
+                });
     }
 
     public void getUser(String userId, final UserCallback callback) {
@@ -242,13 +252,14 @@ public class FirebaseHelper {
                         if (user != null) {
                             callback.onSuccess(user);
                         } else {
+                            Log.w(TAG, "User " + userId + " not found");
                             callback.onError("User not found");
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
+                        callback.onError(logAndDescribe("getUser(" + userId + ")", error));
                     }
                 });
     }
@@ -280,7 +291,8 @@ public class FirebaseHelper {
 
         for (String[] p : products) {
             Product product = new Product(p[0], p[1], p[2], p[3], p[4]);
-            mDatabase.child(NODE_PRODUCTS).child(p[0]).setValue(product);
+            mDatabase.child(NODE_PRODUCTS).child(p[0]).setValue(product)
+                    .addOnFailureListener(e -> Log.e(TAG, "Sample product write failed: " + p[0], e));
         }
 
         // Markets
@@ -295,7 +307,8 @@ public class FirebaseHelper {
         for (String[] m : markets) {
             Market market = new Market(m[0], m[1], m[2],
                     Double.parseDouble(m[3]), Double.parseDouble(m[4]));
-            mDatabase.child(NODE_MARKETS).child(m[0]).setValue(market);
+            mDatabase.child(NODE_MARKETS).child(m[0]).setValue(market)
+                    .addOnFailureListener(e -> Log.e(TAG, "Sample market write failed: " + m[0], e));
         }
 
         // Sample Prices for today
@@ -340,7 +353,17 @@ public class FirebaseHelper {
         price.setProductEmoji(emoji);
 
         String key = productId + "_" + marketId;
-        mDatabase.child(NODE_PRICES).child(date).child(key).setValue(price);
+        mDatabase.child(NODE_PRICES).child(date).child(key).setValue(price)
+                .addOnFailureListener(e -> Log.e(TAG, "Sample price write failed: " + key, e));
+    }
+
+    private static String logAndDescribe(String operation, DatabaseError error) {
+        Log.e(TAG, operation + " was cancelled: " + error.getMessage(), error.toException());
+        return error.getMessage() != null ? error.getMessage() : error.getDetails();
+    }
+
+    private static String describe(Exception e) {
+        return e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
     }
 
     // ==================== CALLBACKS ====================

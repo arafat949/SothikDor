@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sothikdor.app.adapters.PriceAdapter;
@@ -33,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private RecyclerView recyclerView;
     private PriceAdapter priceAdapter;
@@ -46,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private String selectedCategory = "সব";
     private String currentDistrictKey = "dhaka";
     private String currentDistrictName = "ঢাকা";
+    private DatabaseReference pricesRef;
+    private ValueEventListener pricesListener;
 
     private final String[] DISTRICT_NAMES = {
         "ঢাকা","নারায়ণগঞ্জ","গাজীপুর","মানিকগঞ্জ","মুন্সিগঞ্জ","নরসিংদী",
@@ -181,9 +187,11 @@ public class MainActivity extends AppCompatActivity {
         tvLiveIndicator.setVisibility(View.VISIBLE);
         tvMarketName.setText("📍 " + currentDistrictName);
 
-        FirebaseDatabase.getInstance("https://sothik-dor-default-rtdb.asia-southeast1.firebasedatabase.app")
-            .getReference("prices/" + today)
-            .addValueEventListener(new ValueEventListener() {
+        detachPricesListener();
+
+        pricesRef = FirebaseDatabase.getInstance("https://sothik-dor-default-rtdb.asia-southeast1.firebasedatabase.app")
+            .getReference("prices/" + today);
+        pricesListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     swipeRefresh.setRefreshing(false);
@@ -207,11 +215,32 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e(TAG, "Price load cancelled: " + error.getMessage(), error.toException());
                     swipeRefresh.setRefreshing(false);
                     tvLiveIndicator.setVisibility(View.GONE);
-                    Toast.makeText(MainActivity.this, "ডেটা লোড হয়নি", Toast.LENGTH_SHORT).show();
+                    if (allPrices.isEmpty()) {
+                        layoutEmpty.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    }
+                    Toast.makeText(MainActivity.this,
+                            "ডেটা লোড হয়নি: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-            });
+            };
+        pricesRef.addValueEventListener(pricesListener);
+    }
+
+    private void detachPricesListener() {
+        if (pricesRef != null && pricesListener != null) {
+            pricesRef.removeEventListener(pricesListener);
+        }
+        pricesRef = null;
+        pricesListener = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        detachPricesListener();
+        super.onDestroy();
     }
 
     private void showDistrictPicker() {
@@ -231,7 +260,9 @@ public class MainActivity extends AppCompatActivity {
         // প্রতিটি পণ্যের সবচেয়ে কম দামের বাজার রাখি
         java.util.Map<String, Price> bestPriceMap = new java.util.LinkedHashMap<>();
         for (Price price : allPrices) {
-            boolean matchesQuery = query.isEmpty() || price.getProductName().contains(query);
+            String productName = price.getProductName();
+            boolean matchesQuery = query.isEmpty()
+                    || (productName != null && productName.contains(query));
             boolean matchesCategory = category.equals("সব") || category.equals(price.getCategory());
             if (matchesQuery && matchesCategory) {
                 String pid = price.getProductId();

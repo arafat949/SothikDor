@@ -3,6 +3,7 @@ package com.sothikdor.app.activities;
 import com.sothikdor.R;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,8 @@ import com.sothikdor.app.models.Price;
 import com.sothikdor.app.utils.FirebaseHelper;
 
 public class AdminActivity extends AppCompatActivity {
+
+    private static final String TAG = "AdminActivity";
 
     private Spinner spinnerProduct, spinnerMarket;
     private EditText etMinPrice, etMaxPrice;
@@ -127,8 +130,21 @@ public class AdminActivity extends AppCompatActivity {
             if (minStr.isEmpty()) { etMinPrice.setError("সর্বনিম্ন দাম দিন"); return; }
             if (maxStr.isEmpty()) { etMaxPrice.setError("সর্বোচ্চ দাম দিন"); return; }
 
-            double min = Double.parseDouble(minStr);
-            double max = Double.parseDouble(maxStr);
+            double min, max;
+            try {
+                min = Double.parseDouble(minStr);
+                max = Double.parseDouble(maxStr);
+            } catch (NumberFormatException e) {
+                Log.w(TAG, "Invalid price input: min=" + minStr + ", max=" + maxStr, e);
+                etMinPrice.setError("শুধু সংখ্যা দিন");
+                etMaxPrice.setError("শুধু সংখ্যা দিন");
+                return;
+            }
+
+            if (min < 0 || max < 0) {
+                Toast.makeText(this, "দাম ঋণাত্মক হতে পারবে না", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (min > max) {
                 Toast.makeText(this, "সর্বনিম্ন দাম সর্বোচ্চ দামের চেয়ে বেশি হতে পারবে না", Toast.LENGTH_SHORT).show();
@@ -165,6 +181,7 @@ public class AdminActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onError(String error) {
+                    Log.e(TAG, "Price update failed: " + error);
                     runOnUiThread(() -> {
                         progressBar.setVisibility(View.GONE);
                         btnSave.setEnabled(true);

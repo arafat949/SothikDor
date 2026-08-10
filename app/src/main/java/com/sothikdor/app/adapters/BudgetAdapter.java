@@ -5,6 +5,7 @@ import com.sothikdor.R;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import com.sothikdor.app.models.BudgetItem;
 import java.util.List;
 
 public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder> {
+
+    private static final String TAG = "BudgetAdapter";
 
     private final Context context;
     private final List<BudgetItem> items;
@@ -98,11 +101,17 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
                 } else {
                     try {
                         double qty = Double.parseDouble(text);
+                        if (qty < 0) throw new NumberFormatException("negative quantity: " + qty);
                         item.setQuantity(qty);
+                        holder.etQuantity.setError(null);
                         holder.tvSubtotal.setText("= ৳" + String.format("%.0f", item.getTotalCost()));
                         holder.tvSubtotal.setVisibility(View.VISIBLE);
                     } catch (NumberFormatException e) {
+                        Log.w(TAG, "Invalid quantity \"" + text + "\" for " + item.getProductName(), e);
                         item.setQuantity(0);
+                        holder.etQuantity.setText("");
+                        holder.etQuantity.setError("সহি পরিমাণ দিন");
+                        holder.tvSubtotal.setVisibility(View.INVISIBLE);
                     }
                 }
                 if (listener != null) listener.onQuantityChanged();

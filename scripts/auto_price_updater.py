@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys
 import requests
 from bs4 import BeautifulSoup
 import firebase_admin
@@ -33,40 +34,43 @@ def scrape_dam_prices():
     print("DAM website থেকে দাম সংগ্রহ করা হচ্ছে...")
     url = "https://market.dam.gov.bd/market_daily_price_report?L=E"
     headers = {"User-Agent": "Mozilla/5.0"}
-    try:
-        response = requests.get(url, headers=headers, timeout=15)
-        soup = BeautifulSoup(response.content, "html.parser")
-        prices = []
-        table = soup.find("table")
-        if not table:
-            print("Table পাওয়া যায়নি")
-            return []
-        rows = table.find_all("tr")[1:]
-        for row in rows:
-            cols = row.find_all("td")
-            if len(cols) >= 4:
-                product_name = cols[0].text.strip()
-                market_name = cols[1].text.strip()
-                try:
-                    min_price = float(cols[2].text.strip().replace(",", ""))
-                    max_price = float(cols[3].text.strip().replace(",", ""))
-                except:
-                    continue
-                for key in PRODUCT_MAP:
-                    if key.lower() in product_name.lower():
-                        for mkey in MARKET_MAP:
-                            if mkey.lower() in market_name.lower():
-                                prices.append({
-                                    "product": PRODUCT_MAP[key],
-                                    "market": MARKET_MAP[mkey],
-                                    "min": min_price,
-                                    "max": max_price,
-                                })
-        print(str(len(prices)) + " টি দাম পাওয়া গেছে")
-        return prices
-    except Exception as e:
-        print("Error: " + str(e))
-        return []
+    response = requests.get(url, headers=headers, timeout=15)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.content, "html.parser")
+    table = soup.find("table")
+    if table is None:
+        raise RuntimeError("DAM price table not found in the response page")
+
+    prices = []
+    skipped = 0
+    for row in table.find_all("tr")[1:]:
+        cols = row.find_all("td")
+        if len(cols) < 4:
+            continue
+        product_name = cols[0].text.strip()
+        market_name = cols[1].text.strip()
+        try:
+            min_price = float(cols[2].text.strip().replace(",", ""))
+            max_price = float(cols[3].text.strip().replace(",", ""))
+        except ValueError:
+            skipped += 1
+            print("সারি বাদ দেওয়া হলো (" + product_name + " @ " + market_name + "): দাম পড়া যায়নি",
+                  file=sys.stderr)
+            continue
+        for key in PRODUCT_MAP:
+            if key.lower() in product_name.lower():
+                for mkey in MARKET_MAP:
+                    if mkey.lower() in market_name.lower():
+                        prices.append({
+                            "product": PRODUCT_MAP[key],
+                            "market": MARKET_MAP[mkey],
+                            "min": min_price,
+                            "max": max_price,
+                        })
+
+    print(str(len(prices)) + " টি দাম পাওয়া গেছে"
+          + ((" (" + str(skipped) + " টি সারি বাদ)") if skipped else ""))
+    return prices
 
 def push_to_firebase(prices):
     if not firebase_admin._apps:
@@ -100,7 +104,7 @@ def main():
     print("=" * 40)
     prices = scrape_dam_prices()
     if not prices:
-        return
+        raise RuntimeError("DAM থেকে কোনো দাম পাওয়া যায়নি; Firebase আপডেট করা হয়নি")
     push_to_firebase(prices)
 
 if __name__ == "__main__":

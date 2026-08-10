@@ -3,6 +3,7 @@ package com.sothikdor.app.activities;
 import com.sothikdor.R;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BudgetActivity extends AppCompatActivity implements BudgetAdapter.OnQuantityChangedListener {
+
+    private static final String TAG = "BudgetActivity";
 
     private RecyclerView recyclerBudget;
     private BudgetAdapter budgetAdapter;
@@ -91,7 +94,10 @@ public class BudgetActivity extends AppCompatActivity implements BudgetAdapter.O
 
                     @Override
                     public void onError(String error) {
-                        // Demo items দেখানো
+                        // দাম লোড হয়নি → demo items দেখানো
+                        Log.e(TAG, "Budget price load failed: " + error);
+                        Toast.makeText(BudgetActivity.this,
+                                "আজকের দাম লোড হয়নি, ডেমো দাম দেখানো হচ্ছে", Toast.LENGTH_SHORT).show();
                         loadDemoItems();
                     }
                 });

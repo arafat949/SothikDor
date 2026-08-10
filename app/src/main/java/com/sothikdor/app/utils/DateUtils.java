@@ -1,5 +1,7 @@
 package com.sothikdor.app.utils;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -7,6 +9,7 @@ import java.util.Locale;
 
 public class DateUtils {
 
+    private static final String TAG = "DateUtils";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String[] BANGLA_MONTHS = {
         "জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন",
@@ -57,12 +60,22 @@ public class DateUtils {
      * তারিখ থেকে সংক্ষিপ্ত লেবেল (Chart-এর জন্য)
      */
     public static String getShortDateLabel(String date) {
+        if (date == null) return "";
+        String[] parts = date.split("-");
+        if (parts.length < 3) {
+            Log.w(TAG, "Unexpected date format: " + date);
+            return date;
+        }
         try {
-            String[] parts = date.split("-");
             int day = Integer.parseInt(parts[2]);
             int month = Integer.parseInt(parts[1]) - 1;
+            if (month < 0 || month >= BANGLA_MONTHS.length) {
+                Log.w(TAG, "Month out of range in date: " + date);
+                return date;
+            }
             return toBanglaNumber(day) + " " + BANGLA_MONTHS[month].substring(0, 3);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
+            Log.w(TAG, "Non-numeric date part in: " + date, e);
             return date;
         }
     }

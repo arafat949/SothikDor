@@ -44,8 +44,12 @@ MARKETS = [
 def fetch_dam_prices():
     r = requests.get('http://market.dam.gov.bd/market_daily_price_report?L=E',
         headers={'User-Agent': 'Mozilla/5.0'}, timeout=20, verify=False)
+    r.raise_for_status()
     pattern = r'<span class="stockbox"><a href="#([^"]+)">([^<]+)</a>:&nbsp;\s*([\d.]+)\s*-\s*([\d.]+)'
-    return re.findall(pattern, r.text)
+    matches = re.findall(pattern, r.text)
+    if not matches:
+        raise RuntimeError('DAM page returned no parsable price entries')
+    return matches
 
 def push_to_firebase(stockboxes):
     today = datetime.now().strftime('%Y-%m-%d')

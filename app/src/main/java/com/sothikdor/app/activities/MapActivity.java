@@ -4,6 +4,7 @@ import com.sothikdor.R;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -23,8 +24,10 @@ import java.util.List;
 
 public class MapActivity extends AppCompatActivity {
 
-    private MapView mapView;
+    private static final String TAG = "MapActivity";
     private static final int LOCATION_PERMISSION_REQUEST = 1001;
+
+    private MapView mapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,9 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public void onError(String error) {
                 // fallback: add default Dhaka markets
+                Log.e(TAG, "Market list load failed: " + error);
+                Toast.makeText(MapActivity.this,
+                        "বাজারের তালিকা লোড হয়নি, ডিফল্ট বাজার দেখানো হচ্ছে", Toast.LENGTH_SHORT).show();
                 addDefaultMarkets();
             }
         });
@@ -122,9 +128,13 @@ public class MapActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] results) {
         super.onRequestPermissionsResult(requestCode, permissions, results);
-        if (requestCode == LOCATION_PERMISSION_REQUEST &&
-            results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode != LOCATION_PERMISSION_REQUEST) return;
+        if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) {
             addMyLocation();
+        } else {
+            Log.w(TAG, "Location permission denied; my-location overlay disabled");
+            Toast.makeText(this,
+                "লোকেশন অনুমতি না দেওয়ায় আপনার অবস্থান দেখানো যাবে না", Toast.LENGTH_SHORT).show();
         }
     }
 
