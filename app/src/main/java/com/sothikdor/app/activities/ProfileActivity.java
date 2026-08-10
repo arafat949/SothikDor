@@ -8,10 +8,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sothikdor.app.utils.AuthUtils;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private static final String ADMIN_EMAIL = "mdarafatmiah949@gmail.com";
     private FirebaseAuth mAuth;
 
     @Override
@@ -41,11 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
             tvEmail.setText(user.isAnonymous() ? "গেস্ট মোড" : email);
 
             // শুধু Admin email হলে Admin Panel দেখাবে
-            boolean isAdmin = !user.isAnonymous()
-                    && email != null
-                    && email.equalsIgnoreCase(ADMIN_EMAIL);
-
-            btnAdmin.setVisibility(isAdmin ? View.VISIBLE : View.GONE);
+            btnAdmin.setVisibility(AuthUtils.isAdmin(user) ? View.VISIBLE : View.GONE);
         } else {
             tvName.setText("ব্যবহারকারী");
             tvEmail.setText("গেস্ট মোড");

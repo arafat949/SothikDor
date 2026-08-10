@@ -1,13 +1,11 @@
-import urllib.request
-import json
 import random
 from datetime import datetime
-import os
 
-FIREBASE_URL = os.environ.get('FIREBASE_URL',
-    'https://sothik-dor-default-rtdb.asia-southeast1.firebasedatabase.app')
+from firebase_admin import db
+
+from firebase_credentials import init_firebase
+
 today = datetime.now().strftime("%Y-%m-%d")
-url = f"{FIREBASE_URL}/prices/{today}.json"
 ts = int(datetime.now().timestamp() * 1000)
 
 BASE_PRICES = {
@@ -107,12 +105,9 @@ for pid, info in BASE_PRICES.items():
             "timestamp":        ts
         }
 
-data = json.dumps(prices).encode('utf-8')
-req = urllib.request.Request(url, data=data, method='PATCH')
-req.add_header('Content-Type', 'application/json')
-
 try:
-    response = urllib.request.urlopen(req)
+    init_firebase()
+    db.reference(f"prices/{today}").update(prices)
     print(f"✅ {today}: {len(prices)}টি price update সফল!")
     print(f"   {len(BASE_PRICES)} পণ্য × {len(MARKETS)} বাজার")
     print(f"   ব্রাহ্মণবাড়িয়া: আনন্দ বাজার ও মেড্ডা বাজার যোগ হয়েছে ✅")

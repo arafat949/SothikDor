@@ -16,9 +16,12 @@ import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.sothikdor.app.models.Price;
+import com.sothikdor.app.utils.AuthUtils;
 import com.sothikdor.app.utils.FirebaseHelper;
 
 public class AdminActivity extends AppCompatActivity {
+
+    private static final double MAX_PRICE = 100000d;
 
     private Spinner spinnerProduct, spinnerMarket;
     private EditText etMinPrice, etMaxPrice;
@@ -80,6 +83,13 @@ public class AdminActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!AuthUtils.isAdmin()) {
+            Toast.makeText(this, "এই পাতায় প্রবেশের অনুমতি নেই", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_admin);
 
         firebaseHelper = FirebaseHelper.getInstance();
@@ -127,8 +137,19 @@ public class AdminActivity extends AppCompatActivity {
             if (minStr.isEmpty()) { etMinPrice.setError("সর্বনিম্ন দাম দিন"); return; }
             if (maxStr.isEmpty()) { etMaxPrice.setError("সর্বোচ্চ দাম দিন"); return; }
 
-            double min = Double.parseDouble(minStr);
-            double max = Double.parseDouble(maxStr);
+            double min, max;
+            try {
+                min = Double.parseDouble(minStr);
+                max = Double.parseDouble(maxStr);
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "সঠিক সংখ্যা দিন", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (min < 0 || max > MAX_PRICE) {
+                Toast.makeText(this, "দাম 0 থেকে 100000 টাকার মধ্যে হতে হবে", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (min > max) {
                 Toast.makeText(this, "সর্বনিম্ন দাম সর্বোচ্চ দামের চেয়ে বেশি হতে পারবে না", Toast.LENGTH_SHORT).show();
@@ -137,6 +158,11 @@ public class AdminActivity extends AppCompatActivity {
 
             int pIdx = spinnerProduct.getSelectedItemPosition();
             int mIdx = spinnerMarket.getSelectedItemPosition();
+
+            if (pIdx < 0 || pIdx >= productIds.length || mIdx < 0 || mIdx >= marketIds.length) {
+                Toast.makeText(this, "পণ্য এবং বাজার নির্বাচন করুন", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             String today = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(new java.util.Date());
             Price price = new Price(productIds[pIdx], marketIds[mIdx], min, max, today);
