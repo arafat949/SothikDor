@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-import requests, warnings, re, firebase_admin, time
-from firebase_admin import credentials, db
+import requests, re, time
+from firebase_admin import db
 from datetime import datetime
-warnings.filterwarnings('ignore')
 
-if not firebase_admin._apps:
-    cred = credentials.Certificate('scripts/serviceAccountKey.json')
-    firebase_admin.initialize_app(cred, {'databaseURL': 'https://sothik-dor-default-rtdb.asia-southeast1.firebasedatabase.app'})
+from firebase_credentials import init_firebase
+
+MAX_PLAUSIBLE_PRICE = 100000.0
 
 PRODUCT_MAP = {
     'Aman-Fine':             ('p101', 'আমন চাল (সরু)',      '🌾', 'চাল-ডাল',  'কেজি'),
@@ -42,8 +41,8 @@ MARKETS = [
 ]
 
 def fetch_dam_prices():
-    r = requests.get('http://market.dam.gov.bd/market_daily_price_report?L=E',
-        headers={'User-Agent': 'Mozilla/5.0'}, timeout=20, verify=False)
+    r = requests.get('https://market.dam.gov.bd/market_daily_price_report?L=E',
+        headers={'User-Agent': 'Mozilla/5.0'}, timeout=20)
     pattern = r'<span class="stockbox"><a href="#([^"]+)">([^<]+)</a>:&nbsp;\s*([\d.]+)\s*-\s*([\d.]+)'
     return re.findall(pattern, r.text)
 
@@ -56,6 +55,9 @@ def push_to_firebase(stockboxes):
         min_p = float(s[2])
         max_p = float(s[3])
         if dam_name not in PRODUCT_MAP:
+            continue
+        if not 0 < min_p <= max_p <= MAX_PLAUSIBLE_PRICE:
+            print('Skipped implausible price for', dam_name, ':', min_p, '-', max_p)
             continue
         pid, pname, emoji, cat, unit = PRODUCT_MAP[dam_name]
         for mid, mname, factor in MARKETS:
@@ -81,6 +83,7 @@ def push_to_firebase(stockboxes):
     print('মোট', count, 'টি দাম', len(MARKETS), 'টি বাজারে আপডেট হয়েছে!')
     print('তারিখ:', today)
 
+init_firebase()
 print('DAM থেকে live দাম আনা হচ্ছে...')
 data = fetch_dam_prices()
 print('পাওয়া গেছে:', len(data), 'টি পণ্য')

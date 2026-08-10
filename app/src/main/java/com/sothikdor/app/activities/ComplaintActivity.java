@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sothikdor.R;
-import com.sothikdor.app.utils.FirebaseHelper;
+import com.sothikdor.app.utils.AuthUtils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +19,11 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ComplaintActivity extends AppCompatActivity {
+
+    private static final int MAX_SHORT_FIELD = 100;
+    private static final int MAX_PHONE_LENGTH = 20;
+    private static final int MAX_DESCRIPTION_LENGTH = 2000;
+
     private EditText etName, etPhone, etMarket, etProduct, etDescription;
     private Spinner spinnerType;
     private Button btnSubmit;
@@ -28,6 +33,13 @@ public class ComplaintActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!AuthUtils.isSignedIn()) {
+            Toast.makeText(this, "অভিযোগ জমা দিতে লগইন করুন", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_complaint);
 
         if (getSupportActionBar() != null)
@@ -62,11 +74,29 @@ public class ComplaintActivity extends AppCompatActivity {
             return;
         }
 
+        if (name.length() > MAX_SHORT_FIELD || market.length() > MAX_SHORT_FIELD
+                || product.length() > MAX_SHORT_FIELD || phone.length() > MAX_PHONE_LENGTH
+                || desc.length() > MAX_DESCRIPTION_LENGTH) {
+            Toast.makeText(this, "ইনপুট অনুমতিত সীমার চেয়ে বড়", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!phone.isEmpty() && !phone.matches("[0-9+\\-\\s]{6,20}")) {
+            Toast.makeText(this, "সঠিক ফোন নম্বর দিন", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         progressBar.setVisibility(View.VISIBLE);
         btnSubmit.setEnabled(false);
 
         String date = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date());
         String id   = complaintsRef.push().getKey();
+        if (id == null) {
+            progressBar.setVisibility(View.GONE);
+            btnSubmit.setEnabled(true);
+            Toast.makeText(this, "❗ অভিযোগ জমা দেওয়া যায়নি", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Map<String, Object> complaint = new HashMap<>();
         complaint.put("id",          id);
@@ -90,7 +120,7 @@ public class ComplaintActivity extends AppCompatActivity {
             .addOnFailureListener(e -> {
                 progressBar.setVisibility(View.GONE);
                 btnSubmit.setEnabled(true);
-                Toast.makeText(this, "❌ সমস্যা হয়েছে: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "❌ অভিযোগ জমা দেওয়া যায়নি", Toast.LENGTH_SHORT).show();
             });
     }
 }

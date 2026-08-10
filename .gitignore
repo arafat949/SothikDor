@@ -1,2 +1,21 @@
 .gradle/
-build/reports/
+build/
+/local.properties
+.idea/
+*.iml
+.DS_Store
+captures/
+
+# Credentials - never commit
+scripts/serviceAccountKey.json
+serviceAccountKey.json
+*serviceAccount*.json
+.env
+
+# Logs
+*.log
+scripts/dam_log.txt
+
+# Python
+__pycache__/
+*.pyc

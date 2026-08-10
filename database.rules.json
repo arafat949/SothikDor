@@ -1,0 +1,58 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "admins": {
+      ".read": "auth != null",
+      ".write": false
+    },
+
+    "products": {
+      ".read": true,
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+
+    "markets": {
+      ".read": true,
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+
+    "prices": {
+      ".read": true,
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$date": {
+        "$priceId": {
+          ".validate": "newData.hasChildren(['productId', 'marketId', 'minPrice', 'maxPrice', 'date'])",
+          "minPrice": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000" },
+          "maxPrice": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000" },
+          "avgPrice": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000" },
+          "previousAvgPrice": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000" }
+        }
+      }
+    },
+
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['userId']) && newData.child('userId').val() === $uid"
+      }
+    },
+
+    "complaints": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$complaintId": {
+        ".write": "auth != null && (!data.exists() || root.child('admins').child(auth.uid).val() === true)",
+        ".validate": "newData.hasChildren(['name', 'market', 'description', 'status'])",
+        "name": { ".validate": "newData.isString() && newData.val().length <= 100" },
+        "phone": { ".validate": "newData.isString() && newData.val().length <= 20" },
+        "market": { ".validate": "newData.isString() && newData.val().length <= 100" },
+        "product": { ".validate": "newData.isString() && newData.val().length <= 100" },
+        "type": { ".validate": "newData.isString() && newData.val().length <= 50" },
+        "description": { ".validate": "newData.isString() && newData.val().length <= 2000" },
+        "status": { ".validate": "newData.val() === 'pending' || newData.val() === 'resolved'" }
+      }
+    }
+  }
+}

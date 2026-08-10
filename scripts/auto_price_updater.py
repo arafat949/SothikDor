@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 import requests
 from bs4 import BeautifulSoup
-import firebase_admin
-from firebase_admin import credentials, db
+from firebase_admin import db
 from datetime import datetime
 import time
 
-FIREBASE_URL = "https://sothik-dor-default-rtdb.asia-southeast1.firebasedatabase.app"
-SERVICE_ACCOUNT_KEY = "scripts/serviceAccountKey.json"
+from firebase_credentials import init_firebase
 
 PRODUCT_MAP = {
     "Potato": {"id": "p001", "name": "আলু (দেশি)", "emoji": "🥔", "category": "সবজি", "unit": "কেজি"},
@@ -21,6 +19,8 @@ PRODUCT_MAP = {
     "Egg(Farm)": {"id": "p012", "name": "ডিম (ফার্ম)", "emoji": "🥚", "category": "ডিম", "unit": "হালি"},
     "Tomato": {"id": "p013", "name": "টমেটো", "emoji": "🍅", "category": "সবজি", "unit": "কেজি"},
 }
+
+MAX_PLAUSIBLE_PRICE = 100000.0
 
 MARKET_MAP = {
     "Karwan Bazar": {"id": "m001", "name": "কারওয়ান বাজার"},
@@ -50,7 +50,9 @@ def scrape_dam_prices():
                 try:
                     min_price = float(cols[2].text.strip().replace(",", ""))
                     max_price = float(cols[3].text.strip().replace(",", ""))
-                except:
+                except ValueError:
+                    continue
+                if not is_plausible_price(min_price, max_price):
                     continue
                 for key in PRODUCT_MAP:
                     if key.lower() in product_name.lower():
@@ -68,10 +70,12 @@ def scrape_dam_prices():
         print("Error: " + str(e))
         return []
 
+def is_plausible_price(min_price, max_price):
+    return 0 < min_price <= max_price <= MAX_PLAUSIBLE_PRICE
+
+
 def push_to_firebase(prices):
-    if not firebase_admin._apps:
-        cred = credentials.Certificate(SERVICE_ACCOUNT_KEY)
-        firebase_admin.initialize_app(cred, {"databaseURL": FIREBASE_URL})
+    init_firebase()
     today = datetime.now().strftime("%Y-%m-%d")
     ref = db.reference("prices/" + today)
     for item in prices:

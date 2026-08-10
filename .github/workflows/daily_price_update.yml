@@ -5,16 +5,22 @@ on:
     - cron: '0 0 * * *'  # প্রতিদিন সকাল ৬টা BST (UTC+6 = UTC 12am)
   workflow_dispatch:       # manual trigger
 
+permissions:
+  contents: read
+
 jobs:
   update-prices:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
       - name: Update Firebase Prices
         env:
           FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: python scripts/update_prices.py
