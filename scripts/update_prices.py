@@ -112,7 +112,9 @@ req = urllib.request.Request(url, data=data, method='PATCH')
 req.add_header('Content-Type', 'application/json')
 
 try:
-    response = urllib.request.urlopen(req)
+    with urllib.request.urlopen(req) as response:
+        if response.status >= 400:
+            raise RuntimeError(f"Firebase returned HTTP {response.status}")
     print(f"✅ {today}: {len(prices)}টি price update সফল!")
     print(f"   {len(BASE_PRICES)} পণ্য × {len(MARKETS)} বাজার")
     print(f"   ব্রাহ্মণবাড়িয়া: আনন্দ বাজার ও মেড্ডা বাজার যোগ হয়েছে ✅")

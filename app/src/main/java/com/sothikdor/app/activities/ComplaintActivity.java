@@ -1,6 +1,7 @@
 package com.sothikdor.app.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +20,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ComplaintActivity extends AppCompatActivity {
+    private static final String TAG = "ComplaintActivity";
+
     private EditText etName, etPhone, etMarket, etProduct, etDescription;
     private Spinner spinnerType;
     private Button btnSubmit;
@@ -55,10 +58,18 @@ public class ComplaintActivity extends AppCompatActivity {
         String market  = etMarket.getText().toString().trim();
         String product = etProduct.getText().toString().trim();
         String desc    = etDescription.getText().toString().trim();
-        String type    = spinnerType.getSelectedItem().toString();
+        Object selectedType = spinnerType.getSelectedItem();
+        String type    = selectedType != null ? selectedType.toString() : "অন্যান্য";
 
         if (name.isEmpty() || desc.isEmpty() || market.isEmpty()) {
             Toast.makeText(this, "নাম, বাজার এবং বিবরণ দিন", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String id = complaintsRef.push().getKey();
+        if (id == null) {
+            Log.e(TAG, "Could not generate a complaint key; database reference returned null");
+            Toast.makeText(this, "❌ অভিযোগ জমা হয়নি। আবার চেষ্টা করুন।", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -66,7 +77,6 @@ public class ComplaintActivity extends AppCompatActivity {
         btnSubmit.setEnabled(false);
 
         String date = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date());
-        String id   = complaintsRef.push().getKey();
 
         Map<String, Object> complaint = new HashMap<>();
         complaint.put("id",          id);
@@ -88,6 +98,7 @@ public class ComplaintActivity extends AppCompatActivity {
                 etProduct.setText(""); etDescription.setText("");
             })
             .addOnFailureListener(e -> {
+                Log.e(TAG, "Complaint submission failed", e);
                 progressBar.setVisibility(View.GONE);
                 btnSubmit.setEnabled(true);
                 Toast.makeText(this, "❌ সমস্যা হয়েছে: " + e.getMessage(), Toast.LENGTH_SHORT).show();

@@ -3,6 +3,7 @@ package com.sothikdor.app.activities;
 import com.sothikdor.R;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 public class CompareActivity extends AppCompatActivity {
+
+    private static final String TAG = "CompareActivity";
 
     private Spinner spinnerProduct;
     private RecyclerView recyclerCompare;
@@ -111,7 +115,12 @@ public class CompareActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String error) {
+                        Log.e(TAG, "Price comparison load failed: " + error);
                         progressBar.setVisibility(View.GONE);
+                        tvBestMarket.setText("দাম লোড হয়নি");
+                        tvBestPrice.setText("");
+                        Toast.makeText(CompareActivity.this,
+                                "দাম লোড হয়নি: " + error, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
