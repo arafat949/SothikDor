@@ -3,22 +3,18 @@ package com.sothikdor.app.activities;
 import com.sothikdor.R;
 
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.sothikdor.app.models.Price;
+import com.sothikdor.app.utils.DateUtils;
 import com.sothikdor.app.utils.FirebaseHelper;
+import com.sothikdor.app.utils.ViewUtils;
 
-public class AdminActivity extends AppCompatActivity {
+public class AdminActivity extends BaseActivity {
 
     private Spinner spinnerProduct, spinnerMarket;
     private EditText etMinPrice, etMaxPrice;
@@ -85,7 +81,7 @@ public class AdminActivity extends AppCompatActivity {
         firebaseHelper = FirebaseHelper.getInstance();
 
         initViews();
-        setupToolbar();
+        setupToolbar(findViewById(R.id.toolbar), "⚙️ দাম আপডেট (Admin)");
         setupSpinners();
         setupSaveButton();
     }
@@ -99,24 +95,9 @@ public class AdminActivity extends AppCompatActivity {
         progressBar    = findViewById(R.id.progressBar);
     }
 
-    private void setupToolbar() {
-        setSupportActionBar(findViewById(R.id.toolbar));
-        if (getSupportActionBar() != null) {
-            if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            if (getSupportActionBar() != null) getSupportActionBar().setTitle("⚙️ দাম আপডেট (Admin)");
-        }
-    }
-
     private void setupSpinners() {
-        ArrayAdapter<String> productAdapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, productNames);
-        productAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerProduct.setAdapter(productAdapter);
-
-        ArrayAdapter<String> marketAdapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, marketNames);
-        marketAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMarket.setAdapter(marketAdapter);
+        ViewUtils.bindSpinner(spinnerProduct, productNames);
+        ViewUtils.bindSpinner(spinnerMarket, marketNames);
     }
 
     private void setupSaveButton() {
@@ -138,7 +119,7 @@ public class AdminActivity extends AppCompatActivity {
             int pIdx = spinnerProduct.getSelectedItemPosition();
             int mIdx = spinnerMarket.getSelectedItemPosition();
 
-            String today = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(new java.util.Date());
+            String today = DateUtils.getTodayDate();
             Price price = new Price(productIds[pIdx], marketIds[mIdx], min, max, today);
             price.setMarketName(marketNames[mIdx]);
             price.setProductName(productNames[pIdx]);
@@ -146,16 +127,14 @@ public class AdminActivity extends AppCompatActivity {
             price.setCategory(productCategories[pIdx]);
             price.setUnit(productUnits[pIdx]);
 
-            progressBar.setVisibility(View.VISIBLE);
-            btnSave.setEnabled(false);
+            setLoading(progressBar, btnSave, true);
 
             // ✅ Firebase এ Real-time আপডেট
             firebaseHelper.addPrice(price.getDate(), price, new FirebaseHelper.SimpleCallback() {
                 @Override
                 public void onSuccess() {
                     runOnUiThread(() -> {
-                        progressBar.setVisibility(View.GONE);
-                        btnSave.setEnabled(true);
+                        setLoading(progressBar, btnSave, false);
                         etMinPrice.setText("");
                         etMaxPrice.setText("");
                         Toast.makeText(AdminActivity.this,
@@ -166,22 +145,12 @@ public class AdminActivity extends AppCompatActivity {
                 @Override
                 public void onError(String error) {
                     runOnUiThread(() -> {
-                        progressBar.setVisibility(View.GONE);
-                        btnSave.setEnabled(true);
+                        setLoading(progressBar, btnSave, false);
                         Toast.makeText(AdminActivity.this,
                                 "আপডেট ব্যর্থ: " + error, Toast.LENGTH_SHORT).show();
                     });
                 }
             });
         });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

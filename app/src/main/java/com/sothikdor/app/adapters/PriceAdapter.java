@@ -10,10 +10,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sothikdor.app.models.Price;
+import com.sothikdor.app.utils.PriceFormatter;
 
 import java.util.List;
 
@@ -52,21 +52,12 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.ViewHolder> 
         if (holder.tvMarketName != null && price.getMarketName() != null) {
             holder.tvMarketName.setText("📍 " + price.getMarketName());
         }
-        holder.tvMinPrice.setText("৳" + (int) price.getMinPrice());
-        holder.tvPriceRange.setText("৳" + (int) price.getMinPrice() + " - ৳" + (int) price.getMaxPrice());
+        holder.tvMinPrice.setText(PriceFormatter.taka(price.getMinPrice()));
+        holder.tvPriceRange.setText(PriceFormatter.takaRange(price.getMinPrice(), price.getMaxPrice()));
 
         // দামের পরিবর্তন দেখানো
-        double trend = price.getPriceTrend();
-        if (trend > 0) {
-            holder.tvTrend.setText("▲ ৳" + (int) trend + " বেড়েছে");
-            holder.tvTrend.setTextColor(ContextCompat.getColor(context, R.color.red_price));
-        } else if (trend < 0) {
-            holder.tvTrend.setText("▼ ৳" + (int) Math.abs(trend) + " কমেছে");
-            holder.tvTrend.setTextColor(ContextCompat.getColor(context, R.color.green_primary));
-        } else {
-            holder.tvTrend.setText("→ স্থিতিশীল");
-            holder.tvTrend.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
-        }
+        PriceFormatter.applyTrend(holder.tvTrend, price.getPriceTrend(),
+                PriceFormatter.STABLE_STEADY);
 
         // Chart দেখার hint
         holder.tvChartHint.setText("📊 গ্রাফ দেখুন");

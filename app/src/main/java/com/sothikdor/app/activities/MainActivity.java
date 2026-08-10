@@ -24,11 +24,11 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sothikdor.app.adapters.PriceAdapter;
 import com.sothikdor.app.models.Price;
 import com.sothikdor.app.utils.DateUtils;
+import com.sothikdor.app.utils.FirebaseHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
         tvLiveIndicator.setVisibility(View.VISIBLE);
         tvMarketName.setText("📍 " + currentDistrictName);
 
-        FirebaseDatabase.getInstance("https://sothik-dor-default-rtdb.asia-southeast1.firebasedatabase.app")
+        FirebaseHelper.getDatabase()
             .getReference("prices/" + today)
             .addValueEventListener(new ValueEventListener() {
                 @Override
@@ -196,13 +196,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     filterPrices(etSearch.getText().toString(), selectedCategory);
-                    if (allPrices.isEmpty()) {
-                        layoutEmpty.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
-                    } else {
-                        layoutEmpty.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                    }
+                    showEmptyState(allPrices.isEmpty());
                 }
 
                 @Override
@@ -247,13 +241,12 @@ public class MainActivity extends AppCompatActivity {
         }
         filteredPrices.addAll(bestPriceMap.values());
         priceAdapter.notifyDataSetChanged();
-        if (filteredPrices.isEmpty() && !allPrices.isEmpty()) {
-            layoutEmpty.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        } else {
-            layoutEmpty.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-        }
+        showEmptyState(filteredPrices.isEmpty() && !allPrices.isEmpty());
+    }
+
+    private void showEmptyState(boolean empty) {
+        layoutEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+        recyclerView.setVisibility(empty ? View.GONE : View.VISIBLE);
     }
 
     @Override

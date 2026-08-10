@@ -3,11 +3,8 @@ package com.sothikdor.app.activities;
 import com.sothikdor.R;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,11 +14,12 @@ import com.sothikdor.app.models.BudgetItem;
 import com.sothikdor.app.models.Price;
 import com.sothikdor.app.utils.DateUtils;
 import com.sothikdor.app.utils.FirebaseHelper;
+import com.sothikdor.app.utils.PriceFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BudgetActivity extends AppCompatActivity implements BudgetAdapter.OnQuantityChangedListener {
+public class BudgetActivity extends BaseActivity implements BudgetAdapter.OnQuantityChangedListener {
 
     private RecyclerView recyclerBudget;
     private BudgetAdapter budgetAdapter;
@@ -36,10 +34,7 @@ public class BudgetActivity extends AppCompatActivity implements BudgetAdapter.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_budget);
 
-        if (getSupportActionBar() != null) {
-            if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            if (getSupportActionBar() != null) getSupportActionBar().setTitle("বাজার বাজেট হিসাব");
-        }
+        setupToolbar("বাজার বাজেট হিসাব");
 
         recyclerBudget = findViewById(R.id.recyclerBudget);
         tvTotalCost = findViewById(R.id.tvTotalCost);
@@ -135,7 +130,7 @@ public class BudgetActivity extends AppCompatActivity implements BudgetAdapter.O
                 itemCount++;
             }
         }
-        tvTotalCost.setText("৳" + String.format("%.0f", totalCost));
+        tvTotalCost.setText(PriceFormatter.takaRounded(totalCost));
         tvItemCount.setText(itemCount + "টি পণ্য");
     }
 
@@ -148,20 +143,14 @@ public class BudgetActivity extends AppCompatActivity implements BudgetAdapter.O
             if (item.getQuantity() > 0) {
                 sb.append(item.getEmoji()).append(" ").append(item.getProductName())
                   .append(": ").append(item.getQuantity()).append(" ").append(item.getUnit())
-                  .append(" = ৳").append(String.format("%.0f", item.getTotalCost())).append("\n");
+                  .append(" = ").append(PriceFormatter.takaRounded(item.getTotalCost())).append("\n");
             }
         }
-        sb.append("\n💰 মোট: ৳").append(String.format("%.0f", totalCost));
+        sb.append("\n💰 মোট: ").append(PriceFormatter.takaRounded(totalCost));
 
         android.content.Intent shareIntent = new android.content.Intent(android.content.Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
         startActivity(android.content.Intent.createChooser(shareIntent, "শেয়ার করুন"));
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) { onBackPressed(); return true; }
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -8,6 +8,7 @@ import java.util.Locale;
 public class DateUtils {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
     private static final String[] BANGLA_MONTHS = {
         "জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন",
         "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"
@@ -21,6 +22,14 @@ public class DateUtils {
      */
     public static String getTodayDate() {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
+        return sdf.format(new Date());
+    }
+
+    /**
+     * এখনকার তারিখ ও সময় (yyyy-MM-dd HH:mm)
+     */
+    public static String getCurrentDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault());
         return sdf.format(new Date());
     }
 

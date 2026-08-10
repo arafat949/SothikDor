@@ -3,15 +3,12 @@ package com.sothikdor.app.activities;
 import com.sothikdor.R;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +17,8 @@ import com.sothikdor.app.models.Market;
 import com.sothikdor.app.models.Price;
 import com.sothikdor.app.utils.DateUtils;
 import com.sothikdor.app.utils.FirebaseHelper;
+import com.sothikdor.app.utils.PriceFormatter;
+import com.sothikdor.app.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CompareActivity extends AppCompatActivity {
+public class CompareActivity extends BaseActivity {
 
     private Spinner spinnerProduct;
     private RecyclerView recyclerCompare;
@@ -45,10 +44,7 @@ public class CompareActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compare);
 
-        if (getSupportActionBar() != null) {
-            if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            if (getSupportActionBar() != null) getSupportActionBar().setTitle("বাজার দাম তুলনা");
-        }
+        setupToolbar("বাজার দাম তুলনা");
 
         spinnerProduct = findViewById(R.id.spinnerProduct);
         recyclerCompare = findViewById(R.id.recyclerCompare);
@@ -84,13 +80,7 @@ public class CompareActivity extends AppCompatActivity {
                         productIds = uniqueProducts.keySet().toArray(new String[0]);
                         productNames = uniqueProducts.values().toArray(new String[0]);
 
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                CompareActivity.this,
-                                android.R.layout.simple_spinner_item,
-                                productNames
-                        );
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerProduct.setAdapter(adapter);
+                        ViewUtils.bindSpinner(spinnerProduct, productNames);
 
                         spinnerProduct.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
@@ -134,13 +124,7 @@ public class CompareActivity extends AppCompatActivity {
         if (!productPrices.isEmpty()) {
             Price cheapest = productPrices.get(0);
             tvBestMarket.setText("💡 সেরা: " + cheapest.getMarketName());
-            tvBestPrice.setText("৳" + (int) cheapest.getMinPrice() + " থেকে");
+            tvBestPrice.setText(PriceFormatter.taka(cheapest.getMinPrice()) + " থেকে");
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) { onBackPressed(); return true; }
-        return super.onOptionsItemSelected(item);
     }
 }

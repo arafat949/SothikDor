@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sothikdor.app.models.Price;
+import com.sothikdor.app.utils.PriceFormatter;
 
 import java.util.List;
 
@@ -52,8 +53,8 @@ public class CompareAdapter extends RecyclerView.Adapter<CompareAdapter.ViewHold
         holder.tvRank.setText(String.valueOf(position + 1));
         holder.tvMarketName.setText(price.getMarketName());
         holder.tvArea.setText(price.getMarketId() != null ? "ঢাকা" : "");
-        holder.tvMinPrice.setText("৳" + (int) price.getMinPrice());
-        holder.tvMaxPrice.setText("৳" + (int) price.getMaxPrice() + " পর্যন্ত");
+        holder.tvMinPrice.setText(PriceFormatter.taka(price.getMinPrice()));
+        holder.tvMaxPrice.setText(PriceFormatter.taka(price.getMaxPrice()) + " পর্যন্ত");
 
         // সবচেয়ে সস্তা বাজার হাইলাইট করা
         boolean isCheapest = price.getMinPrice() == lowestPrice;
