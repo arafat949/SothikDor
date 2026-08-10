@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sothikdor.app.models.BudgetItem;
+import com.sothikdor.app.utils.PriceFormatter;
 
 import java.util.List;
 
@@ -49,26 +50,20 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
 
         holder.tvEmoji.setText(item.getEmoji());
         holder.tvName.setText(item.getProductName());
-        holder.tvUnitPrice.setText("৳" + (int) item.getPricePerUnit() + "/" + item.getUnit());
+        holder.tvUnitPrice.setText(PriceFormatter.takaPerUnit(item.getPricePerUnit(), item.getUnit()));
 
         // পরিমাণ দেখানো
         holder.etQuantity.setText(item.getQuantity() == 0 ? "" : String.valueOf((int) item.getQuantity()));
 
         // মোট খরচ দেখানো
-        if (item.getQuantity() > 0) {
-            holder.tvSubtotal.setText("= ৳" + String.format("%.0f", item.getTotalCost()));
-            holder.tvSubtotal.setVisibility(View.VISIBLE);
-        } else {
-            holder.tvSubtotal.setVisibility(View.INVISIBLE);
-        }
+        showSubtotal(holder, item);
 
         // + বাটন
         holder.btnIncrease.setOnClickListener(v -> {
             double newQty = item.getQuantity() + 1;
             item.setQuantity(newQty);
             holder.etQuantity.setText(String.valueOf((int) newQty));
-            holder.tvSubtotal.setText("= ৳" + String.format("%.0f", item.getTotalCost()));
-            holder.tvSubtotal.setVisibility(View.VISIBLE);
+            showSubtotal(holder, item);
             if (listener != null) listener.onQuantityChanged();
         });
 
@@ -79,11 +74,10 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
                 item.setQuantity(newQty);
                 if (newQty == 0) {
                     holder.etQuantity.setText("");
-                    holder.tvSubtotal.setVisibility(View.INVISIBLE);
                 } else {
                     holder.etQuantity.setText(String.valueOf((int) newQty));
-                    holder.tvSubtotal.setText("= ৳" + String.format("%.0f", item.getTotalCost()));
                 }
+                showSubtotal(holder, item);
                 if (listener != null) listener.onQuantityChanged();
             }
         });
@@ -94,20 +88,26 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.ViewHolder
                 String text = holder.etQuantity.getText().toString().trim();
                 if (text.isEmpty()) {
                     item.setQuantity(0);
-                    holder.tvSubtotal.setVisibility(View.INVISIBLE);
                 } else {
                     try {
-                        double qty = Double.parseDouble(text);
-                        item.setQuantity(qty);
-                        holder.tvSubtotal.setText("= ৳" + String.format("%.0f", item.getTotalCost()));
-                        holder.tvSubtotal.setVisibility(View.VISIBLE);
+                        item.setQuantity(Double.parseDouble(text));
                     } catch (NumberFormatException e) {
                         item.setQuantity(0);
                     }
                 }
+                showSubtotal(holder, item);
                 if (listener != null) listener.onQuantityChanged();
             }
         });
+    }
+
+    private void showSubtotal(ViewHolder holder, BudgetItem item) {
+        if (item.getQuantity() > 0) {
+            holder.tvSubtotal.setText("= " + PriceFormatter.takaRounded(item.getTotalCost()));
+            holder.tvSubtotal.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvSubtotal.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

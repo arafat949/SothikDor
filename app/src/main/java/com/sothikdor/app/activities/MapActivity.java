@@ -4,10 +4,7 @@ import com.sothikdor.R;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import org.osmdroid.config.Configuration;
@@ -21,7 +18,7 @@ import com.sothikdor.app.models.Market;
 import com.sothikdor.app.utils.FirebaseHelper;
 import java.util.List;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends BaseActivity {
 
     private MapView mapView;
     private static final int LOCATION_PERMISSION_REQUEST = 1001;
@@ -35,10 +32,7 @@ public class MapActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_map);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("বাজারের মানচিত্র");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        setupToolbar("বাজারের মানচিত্র");
 
         mapView = findViewById(R.id.map);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
@@ -85,13 +79,17 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void addMarker(Market market) {
+        addMarker(market.getLatitude(), market.getLongitude(), market.getName(), market.getArea());
+        mapView.invalidate();
+    }
+
+    private void addMarker(double latitude, double longitude, String title, String snippet) {
         Marker marker = new Marker(mapView);
-        marker.setPosition(new GeoPoint(market.getLatitude(), market.getLongitude()));
-        marker.setTitle(market.getName());
-        marker.setSnippet(market.getArea());
+        marker.setPosition(new GeoPoint(latitude, longitude));
+        marker.setTitle(title);
+        marker.setSnippet(snippet);
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         mapView.getOverlays().add(marker);
-        mapView.invalidate();
     }
 
     private void addDefaultMarkets() {
@@ -109,12 +107,7 @@ public class MapActivity extends AppCompatActivity {
             "রামপুরা বাজার","যাত্রাবাড়ী বাজার"
         };
         for (int i = 0; i < markets.length; i++) {
-            Marker marker = new Marker(mapView);
-            marker.setPosition(new GeoPoint(markets[i][0], markets[i][1]));
-            marker.setTitle(names[i]);
-            marker.setSnippet("ঢাকা");
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            mapView.getOverlays().add(marker);
+            addMarker(markets[i][0], markets[i][1], names[i], "ঢাকা");
         }
         mapView.invalidate();
     }
@@ -129,17 +122,8 @@ public class MapActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) { onBackPressed(); return true; }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onResume() { super.onResume(); mapView.onResume(); }
 
     @Override
     protected void onPause() { super.onPause(); mapView.onPause(); }
-
-    @Override
-    public boolean onSupportNavigateUp() { onBackPressed(); return true; }
 }

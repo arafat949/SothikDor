@@ -5,11 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends BaseActivity {
 
     private static final String ADMIN_EMAIL = "mdarafatmiah949@gmail.com";
     private FirebaseAuth mAuth;
@@ -22,10 +21,7 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("প্রোফাইল");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        setupToolbar("প্রোফাইল");
 
         TextView tvName  = findViewById(com.sothikdor.R.id.tv_profile_name);
         TextView tvEmail = findViewById(com.sothikdor.R.id.tv_profile_email);
@@ -63,11 +59,5 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
             finishAffinity();
         });
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
     }
 }

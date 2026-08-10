@@ -4,10 +4,8 @@ import com.sothikdor.R;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -18,13 +16,15 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.sothikdor.app.models.Price;
+import com.sothikdor.app.utils.ChartStyler;
 import com.sothikdor.app.utils.FirebaseHelper;
+import com.sothikdor.app.utils.PriceFormatter;
 import com.sothikdor.app.utils.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDetailActivity extends AppCompatActivity {
+public class ProductDetailActivity extends BaseActivity {
 
     private LineChart lineChart;
     private TextView tvProductName, tvCurrentPrice, tvMinPrice, tvMaxPrice, tvTrend;
@@ -48,7 +48,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         session = SessionManager.getInstance(this);
 
         initViews();
-        setupToolbar();
+        setupToolbar(findViewById(R.id.toolbar), productName);
         loadPriceHistory();
     }
 
@@ -64,14 +64,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         tvProductName.setText(productName);
         tvMarketName.setText(session.getPreferredMarketName());
-    }
-
-    private void setupToolbar() {
-        setSupportActionBar(findViewById(R.id.toolbar));
-        if (getSupportActionBar() != null) {
-            if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            if (getSupportActionBar() != null) getSupportActionBar().setTitle(productName);
-        }
     }
 
     // ✅ গত ৩০ দিনের দামের ইতিহাস লোড করা
@@ -97,21 +89,19 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void updateCurrentInfo(Price latestPrice) {
-        String priceText = "৳" + (int) latestPrice.getAvgPrice() + " / " + latestPrice.getUnit();
-        tvCurrentPrice.setText(priceText);
-        tvMinPrice.setText("সর্বনিম্ন: ৳" + (int) latestPrice.getMinPrice());
-        tvMaxPrice.setText("সর্বোচ্চ: ৳" + (int) latestPrice.getMaxPrice());
+        tvCurrentPrice.setText(PriceFormatter.taka(latestPrice.getAvgPrice())
+                + " / " + latestPrice.getUnit());
+        tvMinPrice.setText(PriceFormatter.minLabel(latestPrice.getMinPrice()));
+        tvMaxPrice.setText(PriceFormatter.maxLabel(latestPrice.getMaxPrice()));
         tvUnit.setText(latestPrice.getUnit());
 
         double trend = latestPrice.getPriceTrend();
+        tvTrend.setText(PriceFormatter.trendLabel(trend, PriceFormatter.STABLE_UNCHANGED));
         if (trend > 0) {
-            tvTrend.setText("▲ ৳" + (int) trend + " বেড়েছে");
             tvTrend.setTextColor(Color.RED);
         } else if (trend < 0) {
-            tvTrend.setText("▼ ৳" + Math.abs((int) trend) + " কমেছে");
             tvTrend.setTextColor(ContextCompat.getColor(this, R.color.green_primary));
         } else {
-            tvTrend.setText("→ অপরিবর্তিত");
             tvTrend.setTextColor(Color.GRAY);
         }
     }
@@ -141,49 +131,27 @@ public class ProductDetailActivity extends AppCompatActivity {
         int amberColor = ContextCompat.getColor(this, R.color.amber_primary);
         int fillColor  = ContextCompat.getColor(this, R.color.green_pale);
 
-        dataSet.setColor(greenColor);
-        dataSet.setLineWidth(2.5f);
-        dataSet.setCircleColor(amberColor);
-        dataSet.setCircleRadius(4f);
-        dataSet.setCircleHoleRadius(2f);
-        dataSet.setCircleHoleColor(Color.WHITE);
-        dataSet.setDrawValues(false);
-        dataSet.setDrawFilled(true);
-        dataSet.setFillColor(fillColor);
-        dataSet.setFillAlpha(80);
-        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER); // মসৃণ লাইন
-
-        // Highlight
+        ChartStyler.styleDataSet(dataSet, greenColor, amberColor, fillColor, 80, false);
         dataSet.setHighLightColor(amberColor);
-        dataSet.setHighlightLineWidth(1.5f);
 
         // Chart কনফিগারেশন
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
 
+        ChartStyler.applyBaseStyle(lineChart);
+
         // X Axis
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setGranularity(1f);
-        xAxis.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
         xAxis.setGridColor(Color.parseColor("#E8E8E8"));
         xAxis.setAxisLineColor(Color.parseColor("#E8E8E8"));
 
         // Y Axis
         YAxis leftAxis = lineChart.getAxisLeft();
-        leftAxis.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
         leftAxis.setGridColor(Color.parseColor("#E8E8E8"));
         leftAxis.setAxisLineColor(Color.parseColor("#E8E8E8"));
-        lineChart.getAxisRight().setEnabled(false);
 
-        // চার্ট স্টাইল
-        lineChart.getDescription().setEnabled(false);
         lineChart.getLegend().setTextColor(ContextCompat.getColor(this, R.color.text_primary));
-        lineChart.setTouchEnabled(true);
-        lineChart.setDragEnabled(true);
-        lineChart.setScaleEnabled(true);
-        lineChart.setPinchZoom(true);
         lineChart.setBackgroundColor(Color.WHITE);
 
         // ✅ অ্যানিমেশন সহ চার্ট দেখানো
@@ -215,14 +183,5 @@ public class ProductDetailActivity extends AppCompatActivity {
         setupChart(demoPriceList);
         tvTrend.setText("→ ডেমো ডেটা");
         tvTrend.setTextColor(Color.GRAY);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

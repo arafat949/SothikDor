@@ -6,7 +6,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.tasks.Task;
 import com.sothikdor.app.models.Market;
 import com.sothikdor.app.models.Price;
 import com.sothikdor.app.models.Product;
@@ -16,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FirebaseHelper {
+
+    public static final String DATABASE_URL =
+            "https://sothik-dor-default-rtdb.asia-southeast1.firebasedatabase.app";
 
     private static FirebaseHelper instance;
     private final DatabaseReference mDatabase;
@@ -29,8 +34,7 @@ public class FirebaseHelper {
 
     private FirebaseHelper() {
         // Firebase Offline Persistence (cache) - অফলাইনে কাজ করবে
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://sothik-dor-default-rtdb.asia-southeast1.firebasedatabase.app");
-        mDatabase = database.getReference();
+        mDatabase = getDatabase().getReference();
 
         // Prices node cache রাখা
         mDatabase.child(NODE_PRICES).keepSynced(true);
@@ -44,6 +48,65 @@ public class FirebaseHelper {
             instance = new FirebaseHelper();
         }
         return instance;
+    }
+
+    public static FirebaseDatabase getDatabase() {
+        return FirebaseDatabase.getInstance(DATABASE_URL);
+    }
+
+    public DatabaseReference reference(String path) {
+        return mDatabase.child(path);
+    }
+
+    // ==================== QUERY HELPERS ====================
+
+    /**
+     * একটি node এর children কে object list এ রূপান্তর করে real-time দেওয়া।
+     */
+    private <T> void listenForList(Query query, ItemMapper<T> mapper,
+                                   final ListReceiver<T> receiver, final ErrorCallback errors) {
+        listen(query, snapshot -> {
+            List<T> items = new ArrayList<>();
+            for (DataSnapshot child : snapshot.getChildren()) {
+                T item = mapper.map(child);
+                if (item != null) items.add(item);
+            }
+            receiver.onList(items);
+        }, errors);
+    }
+
+    /**
+     * রিয়াল-টাইম listener, error হলে callback এ পাঠানো।
+     */
+    private void listen(Query query, final SnapshotHandler handler, final ErrorCallback errors) {
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                handler.handle(snapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                errors.onError(error.getMessage());
+            }
+        });
+    }
+
+    private void completeWith(Task<Void> task, final SimpleCallback callback) {
+        task.addOnSuccessListener(aVoid -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+    }
+
+    private interface ItemMapper<T> {
+        T map(DataSnapshot child);
+    }
+
+    private interface ListReceiver<T> {
+        void onList(List<T> items);
+    }
+
+    private interface SnapshotHandler {
+        void handle(DataSnapshot snapshot);
     }
 
     // ==================== AUTH ====================
@@ -66,26 +129,12 @@ public class FirebaseHelper {
      * সব পণ্যের তালিকা পড়া (Real-time listener)
      */
     public void getAllProducts(final ProductCallback callback) {
-        mDatabase.child(NODE_PRODUCTS)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        List<Product> products = new ArrayList<>();
-                        for (DataSnapshot child : snapshot.getChildren()) {
-                            Product product = child.getValue(Product.class);
-                            if (product != null && product.isActive()) {
-                                product.setProductId(child.getKey());
-                                products.add(product);
-                            }
-                        }
-                        callback.onSuccess(products);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
-                    }
-                });
+        listenForList(mDatabase.child(NODE_PRODUCTS), child -> {
+            Product product = child.getValue(Product.class);
+            if (product == null || !product.isActive()) return null;
+            product.setProductId(child.getKey());
+            return product;
+        }, callback::onSuccess, callback);
     }
 
     // ==================== PRICES ====================
@@ -93,92 +142,53 @@ public class FirebaseHelper {
     /**
      * নির্দিষ্ট তারিখের সব দাম পড়া (Real-time - দাম আপডেট হলে সাথে সাথে দেখাবে)
      */
-    public void getPricesByDate(String date, String marketId, final PriceCallback callback) {
-        mDatabase.child(NODE_PRICES)
-                .child(date)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        List<Price> prices = new ArrayList<>();
-                        for (DataSnapshot child : snapshot.getChildren()) {
-                            Price price = child.getValue(Price.class);
-                            if (price != null) {
-                                price.setPriceId(child.getKey());
-                                // নির্দিষ্ট বাজার ফিল্টার
-                                if (marketId == null || marketId.isEmpty()
-                                        || marketId.equals(price.getMarketId())) {
-                                    prices.add(price);
-                                }
-                            }
-                        }
-                        callback.onSuccess(prices);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
-                    }
-                });
+    public void getPricesByDate(String date, final String marketId, final PriceCallback callback) {
+        listenForList(mDatabase.child(NODE_PRICES).child(date), child -> {
+            Price price = child.getValue(Price.class);
+            if (price == null) return null;
+            price.setPriceId(child.getKey());
+            // নির্দিষ্ট বাজার ফিল্টার
+            boolean matchesMarket = marketId == null || marketId.isEmpty()
+                    || marketId.equals(price.getMarketId());
+            return matchesMarket ? price : null;
+        }, callback::onSuccess, callback);
     }
 
     /**
      * একটি পণ্যের বিভিন্ন বাজারের দাম তুলনা
      */
     public void getPricesByProduct(String productId, String date, final PriceCallback callback) {
-        mDatabase.child(NODE_PRICES)
+        Query query = mDatabase.child(NODE_PRICES)
                 .child(date)
                 .orderByChild("productId")
-                .equalTo(productId)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        List<Price> prices = new ArrayList<>();
-                        for (DataSnapshot child : snapshot.getChildren()) {
-                            Price price = child.getValue(Price.class);
-                            if (price != null) {
-                                price.setPriceId(child.getKey());
-                                prices.add(price);
-                            }
-                        }
-                        callback.onSuccess(prices);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
-                    }
-                });
+                .equalTo(productId);
+        listenForList(query, child -> {
+            Price price = child.getValue(Price.class);
+            if (price == null) return null;
+            price.setPriceId(child.getKey());
+            return price;
+        }, callback::onSuccess, callback);
     }
 
     /**
      * একটি পণ্যের শেষ ৭ দিনের দাম (Chart-এর জন্য)
      */
     public void getLast7DaysPrices(String productId, String marketId, final PriceHistoryCallback callback) {
-        mDatabase.child(NODE_PRICES)
-                .limitToLast(7)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        List<Price> history = new ArrayList<>();
-                        for (DataSnapshot dateSnap : snapshot.getChildren()) {
-                            for (DataSnapshot priceSnap : dateSnap.getChildren()) {
-                                Price price = priceSnap.getValue(Price.class);
-                                if (price != null
-                                        && productId.equals(price.getProductId())
-                                        && (marketId == null || marketId.equals(price.getMarketId()))) {
-                                    price.setDate(dateSnap.getKey());
-                                    history.add(price);
-                                }
-                            }
-                        }
-                        callback.onSuccess(history);
+        listen(mDatabase.child(NODE_PRICES).limitToLast(7), snapshot -> {
+            List<Price> history = new ArrayList<>();
+            for (DataSnapshot dateSnap : snapshot.getChildren()) {
+                for (DataSnapshot priceSnap : dateSnap.getChildren()) {
+                    Price price = priceSnap.getValue(Price.class);
+                    if (price != null
+                            && productId.equals(price.getProductId())
+                            && (marketId == null || marketId.equals(price.getMarketId()))) {
+                        price.setDate(dateSnap.getKey());
+                        history.add(price);
                     }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
-                    }
-                });
+                }
+            }
+            callback.onSuccess(history);
+        }, callback);
     }
 
     /**
@@ -186,12 +196,10 @@ public class FirebaseHelper {
      */
     public void addPrice(String date, Price price, final SimpleCallback callback) {
         String key = price.getProductId() + "_" + price.getMarketId();
-        mDatabase.child(NODE_PRICES)
+        completeWith(mDatabase.child(NODE_PRICES)
                 .child(date)
                 .child(key)
-                .setValue(price)
-                .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+                .setValue(price), callback);
     }
 
     // ==================== MARKETS ====================
@@ -200,57 +208,31 @@ public class FirebaseHelper {
      * সব বাজারের তালিকা
      */
     public void getAllMarkets(final MarketCallback callback) {
-        mDatabase.child(NODE_MARKETS)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        List<Market> markets = new ArrayList<>();
-                        for (DataSnapshot child : snapshot.getChildren()) {
-                            Market market = child.getValue(Market.class);
-                            if (market != null) {
-                                market.setMarketId(child.getKey());
-                                markets.add(market);
-                            }
-                        }
-                        callback.onSuccess(markets);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
-                    }
-                });
+        listenForList(mDatabase.child(NODE_MARKETS), child -> {
+            Market market = child.getValue(Market.class);
+            if (market == null) return null;
+            market.setMarketId(child.getKey());
+            return market;
+        }, callback::onSuccess, callback);
     }
 
     // ==================== USER ====================
 
     public void saveUser(User user, final SimpleCallback callback) {
-        mDatabase.child(NODE_USERS)
+        completeWith(mDatabase.child(NODE_USERS)
                 .child(user.getUserId())
-                .setValue(user)
-                .addOnSuccessListener(aVoid -> callback.onSuccess())
-                .addOnFailureListener(e -> callback.onError(e.getMessage()));
+                .setValue(user), callback);
     }
 
     public void getUser(String userId, final UserCallback callback) {
-        mDatabase.child(NODE_USERS)
-                .child(userId)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        User user = snapshot.getValue(User.class);
-                        if (user != null) {
-                            callback.onSuccess(user);
-                        } else {
-                            callback.onError("User not found");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        callback.onError(error.getMessage());
-                    }
-                });
+        listen(mDatabase.child(NODE_USERS).child(userId), snapshot -> {
+            User user = snapshot.getValue(User.class);
+            if (user != null) {
+                callback.onSuccess(user);
+            } else {
+                callback.onError("User not found");
+            }
+        }, callback);
     }
 
     // ==================== SAMPLE DATA ====================
@@ -345,33 +327,31 @@ public class FirebaseHelper {
 
     // ==================== CALLBACKS ====================
 
-    public interface ProductCallback {
+    public interface ErrorCallback {
+        void onError(String error);
+    }
+
+    public interface ProductCallback extends ErrorCallback {
         void onSuccess(List<Product> products);
-        void onError(String error);
     }
 
-    public interface PriceCallback {
+    public interface PriceCallback extends ErrorCallback {
         void onSuccess(List<Price> prices);
-        void onError(String error);
     }
 
-    public interface PriceHistoryCallback {
+    public interface PriceHistoryCallback extends ErrorCallback {
         void onSuccess(List<Price> history);
-        void onError(String error);
     }
 
-    public interface MarketCallback {
+    public interface MarketCallback extends ErrorCallback {
         void onSuccess(List<Market> markets);
-        void onError(String error);
     }
 
-    public interface UserCallback {
+    public interface UserCallback extends ErrorCallback {
         void onSuccess(User user);
-        void onError(String error);
     }
 
-    public interface SimpleCallback {
+    public interface SimpleCallback extends ErrorCallback {
         void onSuccess();
-        void onError(String error);
     }
 }

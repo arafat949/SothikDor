@@ -1,24 +1,19 @@
 package com.sothikdor.app.activities;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.sothikdor.R;
+import com.sothikdor.app.utils.DateUtils;
 import com.sothikdor.app.utils.FirebaseHelper;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-public class ComplaintActivity extends AppCompatActivity {
+public class ComplaintActivity extends BaseActivity {
     private EditText etName, etPhone, etMarket, etProduct, etDescription;
     private Spinner spinnerType;
     private Button btnSubmit;
@@ -30,12 +25,9 @@ public class ComplaintActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complaint);
 
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle("অভিযোগ / Complaint Box");
+        setToolbarTitle("অভিযোগ / Complaint Box");
 
-        complaintsRef = FirebaseDatabase.getInstance(
-            "https://sothik-dor-default-rtdb.asia-southeast1.firebasedatabase.app"
-        ).getReference("complaints");
+        complaintsRef = FirebaseHelper.getDatabase().getReference("complaints");
 
         etName        = findViewById(R.id.etComplaintName);
         etPhone       = findViewById(R.id.etComplaintPhone);
@@ -62,10 +54,9 @@ public class ComplaintActivity extends AppCompatActivity {
             return;
         }
 
-        progressBar.setVisibility(View.VISIBLE);
-        btnSubmit.setEnabled(false);
+        setLoading(progressBar, btnSubmit, true);
 
-        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date());
+        String date = DateUtils.getCurrentDateTime();
         String id   = complaintsRef.push().getKey();
 
         Map<String, Object> complaint = new HashMap<>();
@@ -81,15 +72,13 @@ public class ComplaintActivity extends AppCompatActivity {
 
         complaintsRef.child(id).setValue(complaint)
             .addOnSuccessListener(unused -> {
-                progressBar.setVisibility(View.GONE);
-                btnSubmit.setEnabled(true);
+                setLoading(progressBar, btnSubmit, false);
                 Toast.makeText(this, "✅ অভিযোগ সফলভাবে জমা হয়েছে!", Toast.LENGTH_LONG).show();
                 etName.setText(""); etPhone.setText(""); etMarket.setText("");
                 etProduct.setText(""); etDescription.setText("");
             })
             .addOnFailureListener(e -> {
-                progressBar.setVisibility(View.GONE);
-                btnSubmit.setEnabled(true);
+                setLoading(progressBar, btnSubmit, false);
                 Toast.makeText(this, "❌ সমস্যা হয়েছে: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });
     }
